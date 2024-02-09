@@ -1,0 +1,143 @@
+<div class="flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent p-4">
+
+  <div class="cards flex gap-4 mb-5">
+
+    <div class="border rounded-lg	p-4 bg-[#e8e8e8] sm:w-full md:w-72">
+      <div class="text-2xl font-extrabold my-2">- 1000 $</div>
+      <div class="px-2 py-1 bg-[#2A8B80] text-white	rounded-lg w-fit my-2">Активный баланс</div>
+    </div>
+
+    <div class="border rounded-lg	p-4 bg-[#e8e8e8] sm:w-full md:w-72">
+      <div class="text-2xl font-extrabold my-2">0 $</div>
+      <div class="px-2 py-1 bg-[#167694] text-white	rounded-lg w-fit my-2">В обработке</div>
+    </div>
+
+    <div class="border rounded-lg	p-4 bg-[#e8e8e8] sm:w-full md:w-72">
+      <div class="text-2xl font-extrabold my-2">5000$</div>
+      <div class="px-2 py-1 bg-[#262564] text-white	rounded-lg w-fit my-2">Оплата услуг за все время</div>
+    </div>
+
+  </div>
+
+  <div class="flex">
+    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+      <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+
+    <div class="text-3xl font-bold tracking-tight">История операций</div>
+  </div>
+
+  <div class="flex justify-between items-center my-4">
+
+    <form [formGroup]="form">
+      <div class="flex gap-2 items-center">
+        <mat-form-field class="flex-auto md:w-72 sm:w-full">
+          <mat-label>Дата отправки груза</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="from" readonly placeholder="От">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+    
+        <mat-form-field class="flex-auto md:w-72 sm:w-full">
+          <mat-label>Дата доставки груза</mat-label>
+          <input matInput [matDatepicker]="picker1" formControlName="to" readonly placeholder="До">
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
+    
+        <mat-form-field class="md:w-72 sm:w-full">
+          <mat-label>Тип операции</mat-label>
+          <mat-select formControlName="type">
+            <mat-option value="topupAccount">Пополнение</mat-option>
+            <mat-option value="withdrawAccount">Вывод</mat-option>
+            <mat-option value="orderPayment">Оплата заказа</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+    
+
+    <div class="flex gap-2 items-center">
+      <button class="fuse-mat-button-large outline outline-1  light" mat-flat-button [color]="'primary'"
+        (click)="createModal('withdrawAccount')">
+        <mat-icon>arrow_upward</mat-icon>
+        Вывод средств
+      </button>
+      <button class="fuse-mat-button-large dark" mat-flat-button [color]="'primary'"
+        (click)="createModal('topupAccount')">
+        <mat-icon>add</mat-icon>
+        Пополнить баланс
+      </button>
+    </div>
+
+  </div>
+
+  <div class="overflow-auto">
+    <mat-table matSort [dataSource]="dataSource">
+      <ng-container matColumnDef="index">
+        <mat-header-cell class="font-extrabold index-column" *matHeaderCellDef> No </mat-header-cell>
+        <mat-cell class="index-column" *matCellDef="let row; let i=index"> {{ i + 1 }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="id">
+        <mat-header-cell class="font-extrabold index-column" *matHeaderCellDef> ID </mat-header-cell>
+        <mat-cell class="index-column" *matCellDef="let row"> {{ row?.id }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="full_name">
+        <mat-header-cell class="font-extrabold" *matHeaderCellDef>Электронная почта</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row?.createdBy }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <mat-header-cell class="font-extrabold" *matHeaderCellDef> Тип операции </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.transactionType == 'topupAccount' ? 'Пополнение' : 'Вывод'}}  
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="created_at">
+        <mat-header-cell class="font-extrabold" *matHeaderCellDef> Дата создания </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row?.createdAt | date: 'dd.MM.YYYY' }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="amount">
+        <mat-header-cell class="font-extrabold" *matHeaderCellDef> Сумма </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row?.amount }} ({{row.currencyName}}) </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="comment">
+        <mat-header-cell class="font-extrabold" *matHeaderCellDef> Комментарий </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row?.comment }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <mat-header-cell class="font-extrabold" *matHeaderCellDef> Статус </mat-header-cell>
+        <mat-cell *matCellDef="let row"> 
+          <span class="status-badge status-order-yellow" *ngIf="!row.rejected && !row.verified">На проверке</span> 
+          <span class="status-badge status-order-green" *ngIf="!row.rejected && row.verified">Одобрен</span> 
+          <span class="status-badge status-order-red" *ngIf="row.rejected && !row.verified">Отклоненный</span> 
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns; let i=index"></mat-row>
+
+    </mat-table>
+
+    <div class="w-full flex justify-center p-2 border" *ngIf="!isLoading && !dataSource?.length">
+      Данные отсутствуют в таблице
+    </div>
+
+    <div class="w-full flex justify-center p-2 border" *ngIf="isLoading">
+      <mat-progress-spinner [diameter]="32" [mode]="'indeterminate'"></mat-progress-spinner>
+    </div>
+
+    <div class="flex justify-end">
+      <mat-paginator [showFirstLastButtons]="true" [length]="dataSource?.length"
+        [pageSizeOptions]="[10, 20, 50, 100, 200]" showFirstLastButtons>
+      </mat-paginator>
+    </div>
+
+  </div>
+</div>
