@@ -1,0 +1,112 @@
+<div class="flex justify-between items-center">
+  <p mat-dialog-title class="font-bold text-2xl">ID #{{data.id}}</p>
+  <button mat-icon-button mat-dialog-close>
+    <mat-icon aria-label="Close dialog">close</mat-icon>
+  </button>
+</div>
+
+<mat-tab-group>
+  <mat-tab label="Информация">
+    <mat-dialog-content class="h-full">
+      <div class="h-60 w-full mt-4">
+        <ya-map [center]="[55.751952, 37.600739]" [zoom]="12">
+        </ya-map>
+      </div>
+      <div class="max-w-md mx-auto mt-3 bg-white rounded-lg shadow-md">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <p class="text-lg mb-1">Откуда</p>
+            <p class="font-bold">{{data.loadingLocation}}</p>
+          </div>
+          <div>
+            <p class="text-lg mb-1">Куда</p>
+            <p class="font-bold">{{data.deliveryLocation}}</p>
+          </div>
+          <div>
+            <p class="text-lg mb-1">Тип груза</p>
+            <p class="font-bold">{{data.cargoType.name}}</p>
+          </div>
+          <div>
+            <p class="text-lg mb-1">Тип транспорта</p>
+            <p class="font-bold" *ngFor="let item of data.transportTypes">
+              {{item.name}}
+            </p>
+          </div>
+
+          <div>
+            <p class="text-lg mb-1">Размер груза</p>
+            <p class="font-bold">
+              д: {{ data.cargoLength ? data.cargoLength + 'см.' : 'Не указана' }}
+              Ш: {{ data.cargoWidth ? data.cargoWidth + 'см.' : 'Не указана' }}
+              В: {{ data.cargoHeight ? data.cargoHeight + 'см.' : 'Не указана' }}
+            </p>
+          </div>
+          <!-- <div>
+            <p class="text-lg mb-1">Пользователь</p>
+            <p class="font-bold">Рафаэль Ройтман</p>
+          </div> -->
+          <div>
+            <p class="text-lg mb-1">Вес груза</p>
+            <p class="font-bold">
+              {{ data.cargoWeight ? data.cargoWeight + 'кг' : 'Не указана' }}
+            </p>
+
+          </div>
+          <div>
+            <p class="text-lg mb-1">Стоимость</p>
+            <p class="font-bold">
+              {{ data.offeredPrice ? data.offeredPrice + ' ' + data.offeredPriceCurrency.name : 'Не указана' }}
+            </p>
+          </div>
+
+          <div>
+            <p class="text-lg mb-1">Дата оформления заказа</p>
+            <p class="font-bold">{{data.createdAt | dateFormat}}</p>
+          </div>
+          <div>
+            <p class="text-lg mb-1">Заказ назначен на</p>
+            <p class="font-bold">{{data.sendDate | dateFormat }}</p>
+          </div>
+          <div>
+            <p class="text-lg mb-1">Статус</p>
+            <p class="status-badge" [class]="returnClassStatusOrder(data.cargoStatus.name)" >{{statusOrderCheck(data.cargoStatus.name)}}</p>
+          </div>
+
+        </div>
+      </div>
+
+    </mat-dialog-content>
+
+  </mat-tab>
+  <mat-tab label="Предложения">
+
+    <div class="max-w-sm p-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <div class="grid grid-cols-2">
+        <div class="mb-2">
+          <p class="text-base mb-1 text-slate-500">ID</p>
+          <p class="font-bold">#5</p>
+        </div>
+        <div class="mb-2">
+          <p class="text-base mb-1 text-slate-500">Телефон</p>
+          <p class="font-bold">+99897 777 77 77</p>
+        </div>
+        <div>
+          <p class="text-base mb-1 text-slate-500	">ФИО</p>
+          <p class="font-bold">Ройтман Рафаэль</p>
+        </div>
+        <div>
+          <p class="text-base mb-1 text-slate-500	">Предлагаемая цена</p>
+          <p class="font-bold">2500$</p>
+        </div>
+      </div>
+      <div class="flex gap-2 w-full">
+        <button type="button"
+          class="px-3 py-2 hover:bg-primary hover:text-white hover:border-primary text-primary border border-primary text-xs font-medium rounded-lg mt-3 w-full">О
+          водителе</button>
+        <button (click)="acceptDriver()" type="button"
+          class="px-3 py-2 text-white text-xs bg-primary font-medium rounded-lg mt-3 w-full hover:opacity-95">Принять</button>
+      </div>
+    </div>
+
+  </mat-tab>
+</mat-tab-group>

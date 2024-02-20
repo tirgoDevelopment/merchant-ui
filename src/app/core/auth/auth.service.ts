@@ -46,14 +46,14 @@ export class AuthService {
     return this.http.post('api/auth/forgot-password', email);
   }
   resetPassword(data): Observable<any> {
-    return this.http.patch(env.apiUrl + '/users/reset-password', data);
+    return this.http.patch(env.authApiUrl + '/client-merchant-user/reset-password', data);
   }
   signIn(credentials: { username: string; password: string,userType: string }) {
     credentials.userType = 'client_merchant_user';
     return this.http.post(env.authApiUrl + '/login', credentials);
   }
   sendEmail(email) {
-    return this.http.post(env.apiUrl + '/merchant-user/send-code', email);
+    return this.http.post(env.authApiUrl + '/client-merchant-user/send-code', email);
   }
   signInUsingToken(): Observable<any> {
     return this.http.post('api/auth/sign-in-with-token', {

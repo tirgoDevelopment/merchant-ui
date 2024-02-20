@@ -28,42 +28,6 @@ mat-cell {
   background-color: #E3E3E3;
 }
 
-.status-badge {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 20px;
-  width: 200px;
-  height: 30px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.status-order-blue {
-  background: #003366 !important;
-  color: white !important;
-}
-
-.status-order-yellow {
-  background: #F7C02B !important;
-  color: white !important;
-}
-
-.status-order-green {
-  background: #1da706 !important;
-  color: white !important;
-}
-
-.status-order-red {
-  background: #D71010 !important;
-  color: white !important;
-}
-
-.status-order-info {
-  background: #006400 !important;
-  color: white !important;
-}
-
 .index-column {
   flex: none !important;
   display: flex;

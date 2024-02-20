@@ -1,21 +1,21 @@
 <div class="flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent p-4">
 
-  <div class="cards flex gap-4 mb-5">
+  <div class="cards flex gap-4 mb-5" *ngFor="let card of balances">
 
     <div class="border rounded-lg	p-4 bg-[#e8e8e8] sm:w-full md:w-72">
-      <div class="text-2xl font-extrabold my-2">- 1000 $</div>
+      <div class="text-2xl font-extrabold my-2">{{card.activebalance}} {{card.currencyname}}</div>
       <div class="px-2 py-1 bg-[#2A8B80] text-white	rounded-lg w-fit my-2">Активный баланс</div>
     </div>
 
     <div class="border rounded-lg	p-4 bg-[#e8e8e8] sm:w-full md:w-72">
-      <div class="text-2xl font-extrabold my-2">0 $</div>
+      <div class="text-2xl font-extrabold my-2">{{card.frozenbalance}} {{card.currencyname}}</div>
       <div class="px-2 py-1 bg-[#167694] text-white	rounded-lg w-fit my-2">В обработке</div>
     </div>
 
-    <div class="border rounded-lg	p-4 bg-[#e8e8e8] sm:w-full md:w-72">
+    <!-- <div class="border rounded-lg	p-4 bg-[#e8e8e8] sm:w-full md:w-72">
       <div class="text-2xl font-extrabold my-2">5000$</div>
       <div class="px-2 py-1 bg-[#262564] text-white	rounded-lg w-fit my-2">Оплата услуг за все время</div>
-    </div>
+    </div> -->
 
   </div>
 
@@ -92,7 +92,8 @@
       <ng-container matColumnDef="type">
         <mat-header-cell class="font-extrabold" *matHeaderCellDef> Тип операции </mat-header-cell>
         <mat-cell *matCellDef="let row">
-          {{row.transactionType == 'topupAccount' ? 'Пополнение' : 'Вывод'}}  
+          <span *ngIf="row.transctionType == 'topupAccount'">Пополнение</span>
+          <span *ngIf="row.transctionType == 'withdrawAccount'">Вывод</span>
         </mat-cell>
       </ng-container>
 
