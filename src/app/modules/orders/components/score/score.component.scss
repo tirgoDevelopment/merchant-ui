@@ -1,0 +1,14 @@
+.service, .tax {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .service-name, .tax-name {
+    flex: 1;
+  }
+  
+  .service-price, .tax-price {
+    flex: 0 0 auto;
+  }
+  

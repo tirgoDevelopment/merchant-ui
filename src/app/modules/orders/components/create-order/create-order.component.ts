@@ -136,7 +136,7 @@ export class CreateOrderComponent implements OnInit {
     this.orderService.createOrder(this.form.value).subscribe((res: any) => {
       this.toastr.success('Created');
     })
-    // this.closeModal();
+    this.closeModal();
   }
   nextStep() {
     if (this.currentStep < 3) {

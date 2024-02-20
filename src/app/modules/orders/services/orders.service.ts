@@ -16,9 +16,9 @@ export class OrdersService {
     return this.http.get(env.orderApiUrl + '/orders/clients/all-orders?userId=' + id);
   }
   getOrderById(id) {
-    return this.http.get(env.orderApiUrl + '/orders/id?id=' + id);
+    return this.http.get(env.orderApiUrl + '/orders/clients/order-by-id?orderId=' + id);
   }
   createOrder(data) {
-    return this.http.post(env.orderApiUrl + '/orders',data)
+    return this.http.post(env.orderApiUrl + '/orders/clients',data)
   }
 }

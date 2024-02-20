@@ -17,6 +17,7 @@ import { AuthService } from 'app/core/auth/auth.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateOrderComponent } from './components/create-order/create-order.component';
+import { OrderDetailComponent } from './components/order/order-detail.component';
 
 @Component({
   selector: 'app-orders',
@@ -37,7 +38,7 @@ export class OrdersComponent implements OnInit {
     private dialog: MatDialog
   ) { }
   ngOnInit(): void {
-    this.currentUser = jwtDecode(this.authService.accessToken);
+    this.currentUser = jwtDecode(this.authService.accessToken);    
     this.getOrders();
   }
   getOrders() {
@@ -98,8 +99,22 @@ export class OrdersComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       this.getOrders();
-      // this.verifyPhoneForm.enable();
     });
   }
-
+  showOrderDetails(order) {
+    const dialogRef = this.dialog.open(OrderDetailComponent, {
+      height: '100vh',
+      autoFocus: false,
+      disableClose: true,
+      data: order,
+      position: {
+        top: '0',
+        right: '0',
+      },
+      maxHeight: '100%',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.getOrders();
+    });    
+  }
 }

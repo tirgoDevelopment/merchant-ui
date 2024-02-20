@@ -76,7 +76,8 @@
 
       <ng-container matColumnDef="offeredPrice">
         <mat-header-cell *matHeaderCellDef>Предлагаемая стоимость</mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.offeredPrice }}
+        <mat-cell *matCellDef="let row"> 
+          {{ row.offeredPrice ? row.offeredPrice + ' ' + row.offeredPriceCurrency.name: 'Не указана' }}
         </mat-cell>
       </ng-container>
 
@@ -93,7 +94,7 @@
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns; let i=index"></mat-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns; let i=index" (click)="showOrderDetails(row)"></mat-row>
 
     </mat-table>
 

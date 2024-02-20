@@ -34,6 +34,7 @@ export const appRoutes: Route[] = [
       { path: 'dashboards', loadChildren: () => import('app/modules/dashboards/dashboard.resolver') },
       { path: 'orders', loadChildren: () => import('app/modules/orders/orders.resolver') },
       { path: 'finance', loadChildren: () => import('app/modules/finance/finance.resolver') },
+      { path: 'settings', loadChildren: () => import('app/modules/settings/settings.resolver') },
 
       { path: '404-not-found', pathMatch: 'full', loadChildren: () => import('app/shared/components/error-404/error-404.routes') },
       { path: '**', redirectTo: '404-not-found' }

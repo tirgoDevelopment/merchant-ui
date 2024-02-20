@@ -33,7 +33,9 @@ export class FinanceComponent implements OnInit {
   isLoading: boolean = false;
   dataSource: any[];
   displayedColumns: string[] = ['index', 'id','status','full_name','type','amount','created_at',"comment"];
-  currentUser:any;
+  currentUser:any = {activeBalance:'',frozenbalance:''};
+  balances: any;
+
   constructor(
     private formBuilder: FormBuilder,
     private financeService: FinanceService,
@@ -47,8 +49,13 @@ export class FinanceComponent implements OnInit {
       type: ['']
     })
     this.getAllTransaction();
+    this.getBalance();
   }
-
+  getBalance() {
+    this.financeService.getBalance(this.currentUser.merchantId).subscribe((res:any) => {
+      this.balances = res.data;
+    })
+  }
   getAllTransaction() {
     this.financeService.getAll(this.currentUser.userId).subscribe((res: any) => {
       this.dataSource = res.data;
@@ -62,6 +69,7 @@ export class FinanceComponent implements OnInit {
         type
       }
     });
-    dialogRef.afterClosed().subscribe(result => { });
-  }
+    dialogRef.afterClosed().subscribe(result => {
+      this.getAllTransaction();
+    });  }
 }
