@@ -44,29 +44,27 @@ export class AuthVerifyPhoneComponent implements OnInit {
     });
   }
 
-  verifyPhone() {
-    if (!this.verifyPhoneForm.value.phone) {
-      this.toastr.error('Введите номер телефона');
-    }
+  verifyPhone() {    
+    if(this.verifyPhoneForm.status == 'INVALID' && !this.verifyPhoneForm.value.phone) {
+      this.toastr.error('Неверный формат номера телефона');
+    } 
     else {
       this.verifyPhoneForm.patchValue({
         countryCode: this.phone.selectedCountry.iso2
       });
       this.verifyPhoneForm.disable();
-      this.authService.verifyPhone(this.verifyPhoneForm.value)
-        .subscribe(
-          (response:any) => {
-            this.showVerifyCode(response.data)
-            this.verifyPhoneForm.enable();
-          },
-        );
+      this.authService.verifyPhone(this.verifyPhoneForm.value).subscribe((response: any) => {
+        this.showVerifyCode(response.data)
+        this.verifyPhoneForm.enable();
+      },
+      );
     }
   }
 
   showVerifyCode(data) {
     const dialogRef = this.dialog.open(VerificationCodeComponent, {
       autoFocus: false,
-      disableClose: true ,
+      disableClose: true,
       data: {
         countryCode: this.phone.selectedCountry.iso2,
         phone: this.verifyPhoneForm.value.phone,

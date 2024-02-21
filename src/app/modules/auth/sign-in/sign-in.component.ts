@@ -45,8 +45,9 @@ export class AuthSignInComponent implements OnInit {
   }
 
   ngOnInit() {
+    this._authService.signOut();
     this.signInForm = this._formBuilder.group({
-      username: ['frima@gmail.com', [Validators.required, Validators.email]],
+      username: ['qq@gmail.com', [Validators.required, Validators.email]],
       password: ['123', Validators.required],
     });
   }
@@ -57,7 +58,7 @@ export class AuthSignInComponent implements OnInit {
     }
     this.signInForm.disable();
     this._authService.signIn(this.signInForm.value).subscribe((res: any) => {
-      if (res) {
+      if (res.success) {
         this.signInForm.enable();
         this._authService.accessToken = res.data.token;
         let user: any = jwtDecode(res.data.token);
@@ -66,13 +67,19 @@ export class AuthSignInComponent implements OnInit {
           this._authService.redirect(merchant.data);
         })
       }
-      else if (res.message == 'invalidPassword') {
+    }, error => {
+      if(error.error.message == "userNotFound") {
+        this.signInForm.enable();
+        this.toastr.error('Пользователь не найден')
+      }
+      else if(error.error.message == "invalidPassword") {
         this.signInForm.enable();
         this.toastr.error('Неверный пароль')
       }
-    }, error => {
-      this.signInForm.enable();
-      this.toastr.error(error.message)
+      else {
+        this.signInForm.enable();
+        this.toastr.error(error.error.message)
+      }
     })
   }
 }

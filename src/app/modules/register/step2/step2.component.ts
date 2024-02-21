@@ -1,5 +1,5 @@
 import { NgIf, NgClass, CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -15,9 +15,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { ToastrService } from 'ngx-toastr';
 import { jwtDecode } from 'jwt-decode';
 import { AuthService } from 'app/core/auth/auth.service';
-import { UploadService } from 'app/shared/services/upload.service';
-import { UserService } from 'app/core/user/user.service';
-import { user } from 'app/core/mock-api/common/user/data';
 
 @Component({
   selector: 'auth-step-2',
@@ -30,39 +27,28 @@ import { user } from 'app/core/mock-api/common/user/data';
 })
 export class Step2Component implements OnInit {
   formData = new FormData()
-
-  API_URL = 'https://merchant.tirgo.io/api/v1/file/download/'
-  toastr = inject(ToastrService);
   @ViewChild('signUpNgForm') signUpNgForm: NgForm;
   signUpForm: FormGroup;
 
-  passportFile: FileList;
-  passportNames: string[] = [];
-
-  certificateFile: FileList;
-  certificateNames: string[] = [];
-
-  selectedFiles: FileList;
-  selectedFileNames: string[] = [];
-
-  transportationCertificateFile: FileList;
-  transportationCertificateNames: string[] = [];
+  logoFilePath: string | ArrayBuffer | null = null;
+  registrationCertificateFilePath: string | ArrayBuffer | null = null;
+  passportFilePath: string | ArrayBuffer | null = null;
+  transportationCertificateFilePath: string | ArrayBuffer | null = null;
 
   merchant: any;
   currencies: any;
   showBankAccount2: boolean = false;
   showTrashIcon: boolean = false;
   data;
-  currentUser
+  currentUser;
   constructor(
     private authService: AuthService,
-    private userService: UserService,
-    private uploadService: UploadService,
+    private toastr: ToastrService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
   }
-
 
   ngOnInit() {
     this.data = { certificate_registration: '', supervisor_passport: '' };
@@ -96,7 +82,6 @@ export class Step2Component implements OnInit {
       transportationCertificateFilePath: ['']
     });
   }
-
   initForm(merchant) {
     this.signUpForm.patchValue({
       merchantId: this.merchant.id,
@@ -146,6 +131,7 @@ export class Step2Component implements OnInit {
       this.toastr.error('Требуется указать Юридический адрес');
     }
     else {
+      this.formData.append('merchantId', this.currentUser.merchantId)
       this.formData.append('supervisorFirstName', this.signUpForm.value.supervisorFirstName)
       this.formData.append('supervisorLastName', this.signUpForm.value.supervisorLastName)
       this.formData.append('responsiblePersonFistName', this.signUpForm.value.responsiblePersonFistName)
@@ -153,16 +139,11 @@ export class Step2Component implements OnInit {
       this.formData.append('responsbilePersonPhoneNumber', this.signUpForm.value.responsbilePersonPhoneNumber)
       this.formData.append('factAddress', this.signUpForm.value.factAddress)
       this.formData.append('legalAddress', this.signUpForm.value.legalAddress)
-      // this.formData.append('logoFilePath',this.signUpForm.get('logoFilePath').value, new Date().getTime().toString())
-      // this.formData.append('passportFilePath',this.signUpForm.get('passportFilePath').value, new Date().getTime().toString())
-      // this.formData.append('registrationCertificateFilePath',this.signUpForm.get('registrationCertificateFilePath').value, new Date().getTime().toString())
-      // this.formData.append('transportationCertificateFilePath',this.signUpForm.get('transportationCertificateFilePath').value, new Date().getTime().toString())
-      this.authService.merchantUpdate(this.signUpForm.value).subscribe((res: any) => {
+      this.authService.merchantUpdate(this.formData).subscribe((res: any) => {
         if (res.success) {
           this.signUpForm.enable();
           this.router.navigate(['register/step3']);
         }
-
       }, error => {
         this.signUpForm.enable();
         this.toastr.error(error.message);
@@ -170,25 +151,15 @@ export class Step2Component implements OnInit {
     }
   }
   selectFile(event: any, name: string) {
-    if (name == "logo") this.selectedFileNames = event.target.files[0].name;
-    if (name == "certificate_registration") this.certificateNames = event.target.files[0].name;
-    if (name == "supervisor_passport") this.passportNames = event.target.files[0].name;
-    if (name == "transportationCertificate") this.passportNames = event.target.files[0].name;
-
-    const file = event.target.files[0];
-    this.formData.append(name, file, new Date().getTime().toString());
-
-    // this.uploadService.uploadAvatar(formData).subscribe(
-    //   (response) => {
-    //     if (response) {
-    //       this.toastr.success("Файл успешно загружен");
-    //       this.data[name] = response.filename;
-    //     }
-    //   },
-    //   (error) => {
-    //     this.toastr.error(error.message);
-    //   }
-    // );
+    const file: File = event.target.files[0];
+    if (file) {
+      this.formData.append(name, file, new Date().getTime().toString() + '.jpg');
+      const reader = new FileReader();
+      reader.onload = () => {
+        this[name] = reader.result;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(file);
+    }
   }
-
 }

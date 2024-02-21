@@ -14,7 +14,6 @@ export const appRoutes: Route[] = [
     component: LayoutComponent,
     children: [
       { path: 'verify-phone', loadChildren: () => import('app/modules/auth/verify-phone/verify-phone.routes') },
-      { path: 'confirmation-required', loadChildren: () => import('app/modules/auth/confirmation-required/confirmation-required.routes') },
       { path: 'sign-in', loadChildren: () => import('app/modules/auth/sign-in/sign-in.routes') },
       { path: 'sign-up', loadChildren: () => import('app/modules/auth/sign-up/sign-up.routes') },
       { path: 'forgot-password', loadChildren: () => import('app/modules/auth/forgot-password/forgot-password.routes') },
@@ -35,6 +34,8 @@ export const appRoutes: Route[] = [
       { path: 'orders', loadChildren: () => import('app/modules/orders/orders.resolver') },
       { path: 'finance', loadChildren: () => import('app/modules/finance/finance.resolver') },
       { path: 'settings', loadChildren: () => import('app/modules/settings/settings.resolver') },
+      { path: 'documents', loadChildren: () => import('app/modules/documents/documents.resolver') },
+      { path: 'support', loadChildren: () => import('app/modules/support/support.resolver') },
 
       { path: '404-not-found', pathMatch: 'full', loadChildren: () => import('app/shared/components/error-404/error-404.routes') },
       { path: '**', redirectTo: '404-not-found' }

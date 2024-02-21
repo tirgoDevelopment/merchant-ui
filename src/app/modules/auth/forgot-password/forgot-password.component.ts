@@ -53,7 +53,7 @@ export class AuthForgotPasswordComponent implements OnInit {
           this.toastr.success("Sms-код будет отправлен на вашу электронную почту");
           this.showVerifyCode(this.form.value.email)
         }
-        else if (res.errors[0] == "Create data failed") {
+        else if (res.messages[0] == "createFailed") {
           this.toastr.error("Адрес электронной почты не найден");
           this.form.enable();
         }

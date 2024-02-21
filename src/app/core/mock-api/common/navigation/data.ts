@@ -20,7 +20,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
         title: 'Документы',
         type: 'basic',
         icon: 'document.svg',
-        link: '/document',
+        link: '/documents',
     },
     {
         id: 'settings',
@@ -29,20 +29,20 @@ export const defaultNavigation: FuseNavigationItem[] = [
         icon: 'settings.svg',
         link: '/settings',
     },
-    {
-        id: 'workers',
-        title: 'Сотрудники',
-        type: 'basic',
-        icon: 'employes.svg',
-        link: '/worker',
-    },
-    {
-        id: 'analytics',
-        title: 'Аналитика',
-        type: 'basic',
-        icon: 'analitika.svg',
-        link: '/analytics',
-    },
+    // {
+    //     id: 'workers',
+    //     title: 'Сотрудники',
+    //     type: 'basic',
+    //     icon: 'employes.svg',
+    //     link: '/worker',
+    // },
+    // {
+    //     id: 'analytics',
+    //     title: 'Аналитика',
+    //     type: 'basic',
+    //     icon: 'analitika.svg',
+    //     link: '/analytics',
+    // },
     {
         id: 'support',
         title: 'Тех.поддержка',

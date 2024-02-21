@@ -42,9 +42,6 @@ export class AuthService {
   getMerchantById(id) {
     return this.http.get(env.authApiUrl + '/client-merchant/id?id=' + id);
   }
-  forgotPassword(email: string): Observable<any> {
-    return this.http.post('api/auth/forgot-password', email);
-  }
   resetPassword(data): Observable<any> {
     return this.http.patch(env.authApiUrl + '/client-merchant-user/reset-password', data);
   }
@@ -55,55 +52,21 @@ export class AuthService {
   sendEmail(email) {
     return this.http.post(env.authApiUrl + '/client-merchant-user/send-code', email);
   }
-  signInUsingToken(): Observable<any> {
-    return this.http.post('api/auth/sign-in-with-token', {
-      accessToken: this.accessToken,
-    }).pipe(
-      catchError(() =>
-        of(false),
-      ),
-      switchMap((response: any) => {
-        if (response.accessToken) {
-          this.accessToken = response.accessToken;
-        }
-        this._authenticated = true;
-        this._userService.user = response.user;
-        return of(true);
-      }),
-    );
-  }
   signOut(): Observable<any> {
-    // Remove the access token from the local storage
     localStorage.removeItem('merchant');
-    // Set the authenticated flag to false
     this._authenticated = false;
-    // Return the observable
     return of(true);
-  }
-  signUp(user: { name: string; email: string; password: string; company: string }): Observable<any> {
-    return this.http.post('api/auth/sign-up', user);
-  }
-  unlockSession(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post('api/auth/unlock-session', credentials);
   }
   check(): Observable<boolean> {
     if (this.accessToken) {
       return of(true);
     }
-
     if (this._authenticated) {
       return of(true);
     }
-
-    // Check the access token availability
     if (!this.accessToken) {
       return of(false);
     }
-
-    // Check the access token expire date
-    // if (AuthUtils.isTokenExpired(this.accessToken)) {
-    //   return of(false);
-    // }
   }
   redirect(curMerch) {
     if(curMerch.completed && curMerch.verified) {
@@ -118,8 +81,5 @@ export class AuthService {
     if (curMerch.completed && (!curMerch.rejected && !curMerch.verified)) {
       this.router.navigate(['/register/step3'])
     }
-  }
-  getCurrencies() {
-    return this.http.get(env.apiUrl + '/currency/all');
   }
 }
