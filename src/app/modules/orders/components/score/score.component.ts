@@ -23,6 +23,7 @@ import { PipesModule } from 'app/shared/pipes/pipes.module';
   imports: [MatIconModule,MatTabsModule,NgIf,PipesModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule, ReactiveFormsModule, AngularYandexMapsModule, MatDialogModule, TranslocoModule, FuseDrawerComponent, MatButtonModule, NgFor, NgClass, MatTooltipModule],
 })
 export class ScoreComponent implements OnInit {
+  loading:boolean = false;
     constructor() {}
     ngOnInit(): void {
         

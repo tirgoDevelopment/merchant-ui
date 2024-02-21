@@ -1,4 +1,4 @@
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { NgxMatIntlTelInputComponent } from 'ngx-mat-intl-tel-input';
 import { MatStepperModule } from '@angular/material/stepper';
@@ -149,7 +149,6 @@ export class Step3Component implements OnInit {
         ]
       });
     }
-
 
     this.signUpForm.disable();
     if (this.signUpForm.value.bankName === '') {
