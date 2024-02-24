@@ -39,13 +39,13 @@ export class CreateOrderComponent implements OnInit {
   findList: any[] | undefined = [];
   viewText = false;
   currentStep = 1;
-  currentUser:any;
+  currentUser: any;
   currencies: any;
   cargoTypes: any;
   transportKinds: any;
   transportTypes: any;
-  packagesTypes:any;
-  cargoLoadingMethods:any;
+  packagesTypes: any;
+  cargoLoadingMethods: any;
 
   isAutotransport: any;
   isRefrigerator: any;
@@ -59,7 +59,6 @@ export class CreateOrderComponent implements OnInit {
     private orderService: OrdersService,
     private typesService: TypesService,
     private authService: AuthService,
-    private countryService: CountryService,
     private toastr: ToastrService,
     private dialog: MatDialog
   ) { }
@@ -68,9 +67,9 @@ export class CreateOrderComponent implements OnInit {
     this.currentUser = jwtDecode(this.authService.accessToken)
     this.form = this.formBuilder.group({
       merchantId: [this.currentUser.merchantId],
-      sendDate: [null],
-      loadingLocation: [null],
-      deliveryLocation: [null],
+      sendDate: [null, Validators.required],
+      loadingLocation: [null, Validators.required],
+      deliveryLocation: [null, Validators.required],
       selectedLocations: [[]],
       customsPlaceLocation: [null],
       customsClearancePlaceLocation: [null],
@@ -131,16 +130,57 @@ export class CreateOrderComponent implements OnInit {
       }
     });
   }
-
+  filterPastDates = (date: Date | null): boolean => {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    return date && date >= currentDate;
+  };
   createOrder() {
+    // this.form.disable();
+    console.log(this.form.value);
+    
     this.orderService.createOrder(this.form.value).subscribe((res: any) => {
-      this.toastr.success('Created');
+      if (res.success) {
+        this.form.enable();
+        this.toastr.success('Заказ успешно создан');
+        this.closeModal();
+      }
+    },error => {
+      this.form.enable();
+      this.toastr.error(error.error.message);
     })
-    this.closeModal();
   }
   nextStep() {
-    if (this.currentStep < 3) {
+    if (this.form.value.sendDate == null) {
+      this.toastr.error('Не можем создать заказ, Нужно выбрать дата отправки груза');
+    }
+    else if (this.form.value.loadingLocation == null) {
+      this.toastr.error('Не можем создать заказ, Нужно выбрать место отправки груза');
+    }
+    else if (this.form.value.deliveryLocation == null) {
+      this.toastr.error('Не можем создать заказ, Нужно выбрать место доставки груза');
+    }
+    else if (this.currentStep > 2 && this.form.value.cargoTypeId == null) {
+      this.form.enable();
+      this.toastr.error('Не можем создать заказ, Нужно выбрать тип груза');
+    }
+    else if (this.currentStep > 2 && this.form.value.transportTypeIds == null) {
+      this.form.enable();
+      this.toastr.error('Не можем создать заказ, Нужно выбрать тип транспорта');
+    }
+    else if (this.currentStep > 2 && this.form.value.transportKindIds == null) {
+      this.form.enable();
+      this.toastr.error('Не можем создать заказ, Нужно выбрать вид транспорта');
+    }
+    else if (this.currentStep > 2 && this.form.value.cargoWeight == null) {
+      this.form.enable();
+      this.toastr.error('Не можем создать заказ, Нужно выбрать вес груза');
+    }
+    else if (this.currentStep < 3) {
       this.currentStep++;
+    }
+    else if (this.currentStep == 3) {
+      this.createOrder();
     }
   }
   previousStep() {
@@ -173,20 +213,20 @@ export class CreateOrderComponent implements OnInit {
     });
   }
   findCity(ev: any) {
-    try {
-      const findText = ev.target.value.toString().trim().toLowerCase();
-      if (findText.length >= 2) {
-        this.viewText = true;
-        this.countryService.findCity(findText).subscribe((res: any) => {
-          this.findList = res;
-        })
-        // } else {
-        //   this.viewText = false;
-        //   this.findList = [];
-      }
-    } catch (error) {
-      console.error("Error fetching city data:", error);
-    }
+    // try {
+    //   const findText = ev.target.value.toString().trim().toLowerCase();
+    //   if (findText.length >= 2) {
+    //     this.viewText = true;
+    //     this.countryService.findCity(findText).subscribe((res: any) => {
+    //       this.findList = res;
+    //     })
+    //   } else {
+    //     this.viewText = false;
+    //     this.findList = [];
+    //   }
+    // } catch (error) {
+    //   console.error("Error fetching city data:", error);
+    // }
   }
   closeModal() {
     this.dialogRef.close();

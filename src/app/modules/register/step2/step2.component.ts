@@ -56,9 +56,6 @@ export class Step2Component implements OnInit {
     this.authService.getMerchantById(this.currentUser.merchantId).subscribe((res: any) => {
       if (res.success) {
         this.merchant = res.data;
-        if (this.merchant.supervisorFirstName) {
-          this.router.navigate(['/register/step3']);
-        }
         this.initForm(this.merchant);
       }
     })

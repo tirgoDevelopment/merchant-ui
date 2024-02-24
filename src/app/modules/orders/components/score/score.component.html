@@ -1,39 +1,37 @@
-<div class="flex justify-end items-center">
+<div class="flex justify-between items-center">
+  <div mat-dialog-title class="text-3xl font-bold">Счет</div>
   <button mat-icon-button mat-dialog-close>
     <mat-icon aria-label="Close dialog">close</mat-icon>
   </button>
 </div>
 
 
-<div class="p-4 pt-0">
-  <div class="text-4xl font-bold text-center">Счет</div>
-
+<mat-dialog-content class="mt-5">
   <div class="flex justify-between mb-2">
-    <span class="flex-1">Услуга "Безопасная сделка"</span>
+    <span class="flex-1 font-bold">Услуга "Безопасная сделка"</span>
     <span class="flex-none">$100</span>
   </div>
   <div class="flex justify-between mb-2">
-    <span class="flex-1">Налог</span>
+    <span class="flex-1 font-bold">Налог</span>
     <span class="flex-none">$180</span>
   </div>
   <div class="flex justify-between mb-2">
-    <span class="flex-1">Водителю</span>
+    <span class="flex-1 font-bold">Водителю</span>
     <span class="flex-none">$1320</span>
   </div>
+  <div class="flex justify-between mb-2">
+    <span class="flex-1 font-bold">В итоге</span>
+    <span class="flex-none">$1600</span>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="center" class="flex mt-4 p-0">
+  <button [disabled]="loading" class="fuse-mat-button-sm dark " mat-stroked-button [color]="'primary'">
+    <span *ngIf="!loading">Отменить</span>
+    <mat-progress-spinner *ngIf="loading" [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
+  </button>
 
-  <b>В итоге: 1600$</b>
-
-  <mat-dialog-actions align="center" class="flex mt-4 p-0">
-    <button [disabled]="loading"
-      class="fuse-mat-button-md dark " mat-stroked-button [color]="'primary'">
-      <span *ngIf="!loading">Отменить</span>
-      <mat-progress-spinner *ngIf="loading" [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
-    </button>
-
-    <button [disabled]="loading"
-      class="fuse-mat-button-md dark " mat-flat-button [color]="'primary'">
-      <span *ngIf="!loading">Подтверждаю</span>
-      <mat-progress-spinner *ngIf="loading" [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
-    </button>
-  </mat-dialog-actions>
-</div>
+  <button [disabled]="loading" class="fuse-mat-button-sm dark " mat-flat-button [color]="'primary'">
+    <span *ngIf="!loading">Подтверждаю</span>
+    <mat-progress-spinner *ngIf="loading" [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
+  </button>
+</mat-dialog-actions>

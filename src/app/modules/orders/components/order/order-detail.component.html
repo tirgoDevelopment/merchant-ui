@@ -41,10 +41,7 @@
               В: {{ data.cargoHeight ? data.cargoHeight + 'см.' : 'Не указана' }}
             </p>
           </div>
-          <!-- <div>
-            <p class="text-lg mb-1">Пользователь</p>
-            <p class="font-bold">Рафаэль Ройтман</p>
-          </div> -->
+
           <div>
             <p class="text-lg mb-1">Вес груза</p>
             <p class="font-bold">
@@ -69,7 +66,8 @@
           </div>
           <div>
             <p class="text-lg mb-1">Статус</p>
-            <p class="status-badge" [class]="returnClassStatusOrder(data.cargoStatus.name)" >{{statusOrderCheck(data.cargoStatus.name)}}</p>
+            <p class="font-bold">
+              {{data.cargoStatus.name}}</p>
           </div>
 
         </div>
@@ -78,35 +76,52 @@
     </mat-dialog-content>
 
   </mat-tab>
-  <mat-tab label="Предложения">
-
-    <div class="max-w-sm p-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-      <div class="grid grid-cols-2">
+  <mat-tab label="Предложения" *ngIf="data.driverOffers.length">
+    <div
+      class="max-w-sm p-4 my-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+      *ngFor="let offer of data.driverOffers">
+      <div class="grid grid-cols-2 gap-4">
         <div class="mb-2">
           <p class="text-base mb-1 text-slate-500">ID</p>
-          <p class="font-bold">#5</p>
+          <p class="font-bold">#{{offer.id}}</p>
         </div>
         <div class="mb-2">
-          <p class="text-base mb-1 text-slate-500">Телефон</p>
-          <p class="font-bold">+99897 777 77 77</p>
+          <p *ngIf="data.cargoStatus.code !== 0" class="text-base mb-1 text-slate-500">Телефон</p>
+          <p *ngIf="data.cargoStatus.code !== 0" class="font-bold">{{offer.driver.phoneNumbers[0]?.phoneNumber}} </p>
         </div>
         <div>
           <p class="text-base mb-1 text-slate-500	">ФИО</p>
-          <p class="font-bold">Ройтман Рафаэль</p>
+          <p class="font-bold">{{offer.driver.lastName}} {{offer.driver.firstName}}</p>
         </div>
         <div>
-          <p class="text-base mb-1 text-slate-500	">Предлагаемая цена</p>
-          <p class="font-bold">2500$</p>
+          <p class="text-base mb-1 text-slate-500">Предлагаемая цена</p>
+          <mat-form-field class="flex-auto" *ngIf="editing">
+            <input type="number" matInput [(ngModel)]="editedAmount">
+            <mat-select matPrefix [(ngModel)]="editedCurrencyId">
+              <mat-option *ngFor="let currency of currencies" [value]="currency.id">{{currency.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <p *ngIf="!editing" class="font-bold">{{offer.amount}} {{offer.currency.name}}</p>
         </div>
       </div>
-      <div class="flex gap-2 w-full">
-        <button type="button"
-          class="px-3 py-2 hover:bg-primary hover:text-white hover:border-primary text-primary border border-primary text-xs font-medium rounded-lg mt-3 w-full">О
-          водителе</button>
-        <button (click)="acceptDriver()" type="button"
-          class="px-3 py-2 text-white text-xs bg-primary font-medium rounded-lg mt-3 w-full hover:opacity-95">Принять</button>
+
+      <div class="flex gap-2 w-full" *ngIf="data.cargoStatus.code == 0">
+        <button *ngIf="offer.createdBy.userType !== 'client_merchant_user' && !editing" (click)="editOffer(offer)"
+          type="button"
+          class="px-3 py-2 hover:bg-primary hover:text-white hover:border-primary text-primary border border-primary text-sm font-medium rounded-lg mt-3 w-full">Изменить</button>
+
+        <button *ngIf="!editing" (click)="acceptDriver(offer)" type="button"
+          [disabled]="offer.createdBy.userType == 'client_merchant_user'"
+          class="px-3 py-2 text-white text-sm bg-primary font-medium rounded-lg mt-3 w-full hover:opacity-95">{{offer.createdBy.userType
+          == 'client_merchant_user' ? 'Ожидание запроса' : 'Принять'}}</button>
+
+        <button *ngIf="editing" (click)="cancelEditing()" type="button"
+          class="px-3 py-2 hover:bg-primary hover:text-white hover:border-primary text-primary border border-primary text-sm font-medium rounded-lg mt-3 w-full">Отменить</button>
+
+        <button *ngIf="editing" (click)="saveEditedOffer(offer)" type="button"
+          class="px-3 py-2 text-white text-sm bg-primary font-medium rounded-lg mt-3 w-full hover:opacity-95">Сохранить</button>
+
       </div>
     </div>
-
   </mat-tab>
 </mat-tab-group>
