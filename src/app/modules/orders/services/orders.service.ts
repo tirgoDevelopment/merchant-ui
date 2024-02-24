@@ -21,4 +21,11 @@ export class OrdersService {
   createOrder(data) {
     return this.http.post(env.orderApiUrl + '/orders/clients',data)
   }
+  acceptOffer(id) {
+    // @ts-ignore
+    return this.http.post(env.orderApiUrl + '/orders/clients/accept-offer?id='+id)
+  }
+  contrOffer(data) {
+    return this.http.post(env.orderApiUrl + '/orders/clients/offer-price',data)
+  }
 }

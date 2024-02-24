@@ -12,11 +12,6 @@
       <div class="px-2 py-1 bg-[#167694] text-white	rounded-lg w-fit my-2">В обработке</div>
     </div>
 
-    <!-- <div class="border rounded-lg	p-4 bg-[#e8e8e8] sm:w-full md:w-72">
-      <div class="text-2xl font-extrabold my-2">5000$</div>
-      <div class="px-2 py-1 bg-[#262564] text-white	rounded-lg w-fit my-2">Оплата услуг за все время</div>
-    </div> -->
-
   </div>
 
   <div class="flex">
@@ -27,9 +22,9 @@
     <div class="text-3xl font-bold tracking-tight">История операций</div>
   </div>
 
-  <div class="flex justify-between items-center my-4">
+  <div class="flex justify-end items-center my-4">
 
-    <form [formGroup]="form">
+    <!-- <form [formGroup]="form">
       <div class="flex gap-2 items-center">
         <mat-form-field class="flex-auto md:w-72 sm:w-full">
           <mat-label>Дата отправки груза</mat-label>
@@ -54,7 +49,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-    </form>
+    </form> -->
     
 
     <div class="flex gap-2 items-center">
@@ -86,7 +81,7 @@
 
       <ng-container matColumnDef="full_name">
         <mat-header-cell class="font-extrabold" *matHeaderCellDef>Электронная почта</mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{ row?.createdBy }} </mat-cell>
+        <mat-cell *matCellDef="let row"> {{ row?.createdBy  }} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="type">

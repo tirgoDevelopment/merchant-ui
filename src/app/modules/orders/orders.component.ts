@@ -18,6 +18,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateOrderComponent } from './components/create-order/create-order.component';
 import { OrderDetailComponent } from './components/order/order-detail.component';
+import { SseService } from 'app/shared/services/socket.service';
+import { Subscription } from 'rxjs';
+import { PipesModule } from 'app/shared/pipes/pipes.module';
 
 @Component({
   selector: 'app-orders',
@@ -25,21 +28,35 @@ import { OrderDetailComponent } from './components/order/order-detail.component'
   styleUrls: ['./orders.component.scss'],
   encapsulation: ViewEncapsulation.None,
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, MatProgressSpinnerModule, DatePipe, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
+  imports: [ReactiveFormsModule, FormsModule,DatePipe, MatProgressSpinnerModule, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
 })
 export class OrdersComponent implements OnInit {
   isLoading: boolean = false;
   dataSource: any[];
   displayedColumns: string[] = ['index', 'id', 'sendLocation', 'cargoDeliveryLocation', 'status', 'date_send', 'offeredPrice', 'secure_transaction', 'type_cargo', 'transport_type'];
   currentUser: any;
+  private sseSubscription: Subscription;
+
   constructor(
     private orderService: OrdersService,
     private authService: AuthService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private sseService: SseService
+
   ) { }
   ngOnInit(): void {
     this.currentUser = jwtDecode(this.authService.accessToken);    
     this.getOrders();
+    this.sseSubscription = this.sseService.getUpdates().subscribe(
+      (data) => {
+        if (data.type == 'driverAcceptOffer' || data.type == 'driverOffer' || data.type == 'driverOffer') {
+          this.getOrders();
+        }
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
   getOrders() {
     this.isLoading = true;
@@ -47,6 +64,11 @@ export class OrdersComponent implements OnInit {
       if (res && res.success) {
         this.isLoading = false;
         this.dataSource = res.data;
+        this.dataSource.forEach((v) => {
+          if (v.driverOffers && Array.isArray(v.driverOffers)) {
+            v.driverOffers = v.driverOffers.filter(offer => offer.rejected == false);
+          }
+        })
       }
       else {
         this.isLoading = false;
@@ -60,38 +82,7 @@ export class OrdersComponent implements OnInit {
     result.setDate(result.getDate() + 2);
     return result;
   }
-  statusOrderCheck(params) {
-    switch (params) {
-      case 'waiting':
-        return "Ожидающий";
-      case 1:
-        return "Выполняется";
-      case 2:
-        return "Выполнен";
-      case 3:
-        return "Завершен";
-      case 4:
-        return "Отменен";
-      default:
-        return "Не определен";
-    }
-  }
-  returnClassStatusOrder(params) {
-    switch (params) {
-      case 'waiting':
-        return "status-order-blue";
-      case 1:
-        return "status-order-yellow";
-      case 2:
-        return "status-order-green";
-      case 3:
-        return "status-order-info";
-      case 4:
-        return "status-order-red";
-      default:
-        return "status-order";
-    }
-  }
+ 
   createOrderModal() {
     const dialogRef = this.dialog.open(CreateOrderComponent, {
       autoFocus: false,
@@ -115,6 +106,6 @@ export class OrdersComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       this.getOrders();
-    });    
+    });
   }
 }

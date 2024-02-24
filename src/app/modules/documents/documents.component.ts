@@ -1,6 +1,6 @@
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatRippleModule } from '@angular/material/core';
@@ -14,7 +14,9 @@ import { jwtDecode } from 'jwt-decode';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from 'app/core/auth/auth.service';
-import {MatCardModule} from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
+import { DocumentsService } from './services/documents.service';
+import { PipesModule } from 'app/shared/pipes/pipes.module';
 
 @Component({
   selector: 'app-documents',
@@ -22,19 +24,20 @@ import {MatCardModule} from '@angular/material/card';
   styleUrls: ['./documents.component.scss'],
   encapsulation: ViewEncapsulation.None,
   standalone: true,
-  imports: [MatInputModule,MatCardModule, ReactiveFormsModule, FormsModule, MatProgressSpinnerModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
+  imports: [MatInputModule, CommonModule,MatCardModule,PipesModule, ReactiveFormsModule, FormsModule, MatProgressSpinnerModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
 })
 export class DocumentsComponent implements OnInit {
-  fileApi = "https://merchant.tirgo.io/api/v1/file/download/"
   currentMerchant: any;
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private documentService: DocumentsService
+  ) { }
   ngOnInit(): void {
     this.getMerchant();
   }
 
   getMerchant() {
     let curUser: any = jwtDecode(this.authService.accessToken);
-
     this.authService.getMerchantById(curUser.merchantId).subscribe((res: any) => {
       if (res.success) {
         this.currentMerchant = res.data;

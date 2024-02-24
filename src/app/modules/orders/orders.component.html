@@ -10,15 +10,23 @@
     <div class="filter"></div>
     <button (click)="createOrderModal()" class="fuse-mat-button-large dark" mat-flat-button [color]="'primary'">
       <mat-icon>add</mat-icon>
-       Разместить груз
+      Разместить груз
     </button>
   </div>
 
   <div>
     <mat-table matSort [dataSource]="dataSource" class="table">
       <ng-container matColumnDef="index">
-        <mat-header-cell class="font-extrabold index-column" *matHeaderCellDef> No </mat-header-cell>
-        <mat-cell class="index-column" *matCellDef="let row; let i=index"> {{ i + 1 }} </mat-cell>
+        <mat-header-cell class="font-extrabold index-column " *matHeaderCellDef> No </mat-header-cell>
+        <mat-cell class="index-column relative" *matCellDef="let row; let i=index">
+          <div>
+            {{ i + 1 }}
+            <div
+              class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-green-700 border-1 border-white rounded-full top-0 right-0 dark:border-gray-900"
+              *ngIf="row.driverOffers.length > 0 && row.cargoStatus.code == 0">
+              {{row.driverOffers.length}}</div>
+          </div>
+        </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="id">
@@ -40,8 +48,8 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header
           sortActionDescription="Sort by status">Статус</mat-header-cell>
         <mat-cell *matCellDef="let row">
-          <div class="status-badge" [class]="returnClassStatusOrder(row.cargoStatus.name)">
-            <span>{{statusOrderCheck(row.cargoStatus.name)}}</span>
+          <div class="status-badge relative" [style.backgroundColor]="row.cargoStatus.color">
+            {{row.cargoStatus.name}}
           </div>
         </mat-cell>
       </ng-container>
@@ -76,20 +84,20 @@
 
       <ng-container matColumnDef="offeredPrice">
         <mat-header-cell *matHeaderCellDef>Предлагаемая стоимость</mat-header-cell>
-        <mat-cell *matCellDef="let row"> 
+        <mat-cell *matCellDef="let row">
           {{ row.offeredPrice ? row.offeredPrice + ' ' + row.offeredPriceCurrency.name: 'Не указана' }}
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="date_create">
         <mat-header-cell *matHeaderCellDef>Дата создания</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.createdAt | date: 'dd.MM.YYYY'}}</mat-cell>
+        <mat-cell *matCellDef="let row">{{row.createdAt | date : 'dd.MM.YYYY'}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="date_send">
         <mat-header-cell *matHeaderCellDef>Дата погрузки</mat-header-cell>
         <mat-cell *matCellDef="let row">
-          {{ (row.isUrgent ? addTwoDays(row.createdAt) : row.createdAt) | date: 'dd.MM.YYYY' }}
+          {{ (row.isUrgent ? addTwoDays(row.createdAt) : row.createdAt) | date : 'dd.MM.YYYY'}}
         </mat-cell>
       </ng-container>
 

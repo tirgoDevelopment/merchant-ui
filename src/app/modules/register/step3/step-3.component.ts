@@ -15,7 +15,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { jwtDecode } from 'jwt-decode';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ToastrService } from 'ngx-toastr';
-import { UserService } from 'app/core/user/user.service';
 import { AuthService } from 'app/core/auth/auth.service';
 import { NgxMaskDirective } from 'ngx-mask';
 import { TypesService } from 'app/shared/services/types.service';
@@ -30,8 +29,6 @@ import { TypesService } from 'app/shared/services/types.service';
   imports: [MatSnackBarModule, NgxMaskDirective, MatStepperModule, CommonModule, MatCheckboxModule, MatIconModule, NgClass, MatSelectModule, RouterLink, NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatProgressSpinnerModule, NgxMatIntlTelInputComponent],
 })
 export class Step3Component implements OnInit {
-  toastr = inject(ToastrService);
-  user = inject(UserService);
   @ViewChild('signUpNgForm') signUpNgForm: NgForm;
   signUpForm: FormGroup;
   merchant: any;
@@ -45,6 +42,7 @@ export class Step3Component implements OnInit {
   constructor(
     private authService: AuthService,
     private typesService: TypesService,
+    private toastr: ToastrService,
     private formBuilder: FormBuilder,
   ) { }
 
@@ -60,36 +58,35 @@ export class Step3Component implements OnInit {
     })
 
     this.signUpForm = this.formBuilder.group({
-      id: [''],
-      companyName: [''],
-      companyType: [''],
-      password: [''],
-      email: [''],
-      phoneNumber: [''],
-      merchantId: [''],
-      responsiblePersonLastName: [''],
-      responsiblePersonFistName: [''],
-      registrationCertificateFilePath: [''],
-      passportFilePath: [''],
-      logoFilePath: [''],
-      responsbilePersonPhoneNumber: [''],
-      supervisorFirstName: [''],
-      supervisorLastName: [''],
-      legalAddress: [''],
-      factAddress: [''],
-
-      currency: ['', [Validators.required]],
-      bankAccount: ['', [Validators.required, Validators.maxLength(20), Validators.minLength(20), Validators.pattern('^[0-9]*$')]],
-      currency2: [''],
-      bankAccount2: ['', [Validators.minLength(20), Validators.maxLength(20), Validators.pattern('^[0-9]*$')]],
-      bankName: ['', [Validators.required]],
-      inn: ['', [Validators.required]],
-      taxPayerCode: ['', [Validators.minLength(12), Validators.maxLength(12), Validators.required]],
-      oked: ['', [Validators.required]],
-      mfo: ['', [Validators.required, Validators.required, Validators.maxLength(5), Validators.minLength(5), Validators.pattern('^[0-9]*$')]],
-      dunsNumber: [''],
-      ibanNumber: [''],
-      notes: [''],
+      companyName: [null],
+      companyType: [null],
+      password: [null],
+      email: [null],
+      phoneNumber: [null],
+      merchantId: [null],
+      responsiblePersonLastName: [null],
+      responsiblePersonFistName: [null],
+      registrationCertificateFilePath: [null],
+      passportFilePath: [null],
+      logoFilePath: [null],
+      responsbilePersonPhoneNumber: [null],
+      supervisorFirstName: [null],
+      supervisorLastName: [null],
+      legalAddress: [null],
+      factAddress: [null],
+      bankAccounts: [null],
+      currency: [null, [Validators.required]],
+      bankAccount: [null, [Validators.required, Validators.maxLength(20), Validators.minLength(20), Validators.pattern('^[0-9]*$')]],
+      currency2: [null],
+      bankAccount2: [null, [Validators.minLength(20), Validators.maxLength(20), Validators.pattern('^[0-9]*$')]],
+      bankName: [null, [Validators.required]],
+      inn: [null, [Validators.required]],
+      taxPayerCode: [null, [Validators.minLength(12), Validators.maxLength(12), Validators.required]],
+      oked: [null, [Validators.required]],
+      mfo: [null, [Validators.required, Validators.required, Validators.maxLength(5), Validators.minLength(5), Validators.pattern('^[0-9]*$')]],
+      dunsNumber: [null],
+      ibanNumber: [null],
+      notes: [null],
     });
 
     this.typesService.getCurrencies().subscribe((res: any) => {
@@ -100,56 +97,6 @@ export class Step3Component implements OnInit {
     })
   }
   signUp() {
-    if (this.signUpForm.value.bankAccount2) {
-      this.signUpForm.patchValue({
-        responsiblePersonLastName: this.merchant.responsiblePersonLastName,
-        responsiblePersonFistName: this.merchant.responsiblePersonFistName,
-        registrationCertificateFilePath: this.merchant.registrationCertificateFilePath,
-        passportFilePath: this.merchant.passportFilePath,
-        logoFilePath: this.merchant.logoFilePath,
-        responsbilePersonPhoneNumber: this.merchant.responsbilePersonPhoneNumber,
-        supervisorFirstName: this.merchant.supervisorFirstName,
-        supervisorLastName: this.merchant.supervisorLastName,
-        legalAddress: this.merchant.legalAddress,
-        factAddress: this.merchant.factAddress,
-
-        merchantId: +this.merchant.id,
-        companyName: this.merchant.companyName,
-        companyType: this.merchant.companyType,
-        password: this.merchant.password,
-        phoneNumber: this.merchant.phoneNumber,
-        email: this.merchant.email,
-        bankAccounts: [
-          { account: +this.signUpForm.value.bankAccount, currency: this.signUpForm.value.currency },
-          { account: +this.signUpForm.value.bankAccount2, currency: this.signUpForm.value.currency2 },
-        ]
-      });
-    } 
-    else {
-      this.signUpForm.patchValue({
-        responsiblePersonLastName: this.merchant.responsiblePersonLastName,
-        responsiblePersonFistName: this.merchant.responsiblePersonFistName,
-        registrationCertificateFilePath: this.merchant.registrationCertificateFilePath,
-        passportFilePath: this.merchant.passportFilePath,
-        logoFilePath: this.merchant.logoFilePath,
-        responsbilePersonPhoneNumber: this.merchant.responsbilePersonPhoneNumber,
-        supervisorFirstName: this.merchant.supervisorFirstName,
-        supervisorLastName: this.merchant.supervisorLastName,
-        legalAddress: this.merchant.legalAddress,
-        factAddress: this.merchant.factAddress,
-        
-        merchantId: +this.merchant.id,
-        companyName: this.merchant.companyName,
-        companyType: this.merchant.companyType,
-        password: this.merchant.password,
-        phoneNumber: this.merchant.phoneNumber,
-        email: this.merchant.email,
-        bankAccounts: [
-          { account: +this.signUpForm.value.bankAccount, currency: this.signUpForm.value.currency }
-        ]
-      });
-    }
-
     this.signUpForm.disable();
     if (this.signUpForm.value.bankName === '') {
       this.signUpForm.enable();
@@ -176,6 +123,55 @@ export class Step3Component implements OnInit {
       this.toastr.error('Требуется указать Код плательщика МФО');
     }
     else {
+      if (this.signUpForm.value.bankAccount2 == '') {
+        this.signUpForm.patchValue({
+          responsiblePersonLastName: this.merchant.responsiblePersonLastName,
+          responsiblePersonFistName: this.merchant.responsiblePersonFistName,
+          registrationCertificateFilePath: this.merchant.registrationCertificateFilePath,
+          passportFilePath: this.merchant.passportFilePath,
+          logoFilePath: this.merchant.logoFilePath,
+          responsbilePersonPhoneNumber: this.merchant.responsbilePersonPhoneNumber,
+          supervisorFirstName: this.merchant.supervisorFirstName,
+          supervisorLastName: this.merchant.supervisorLastName,
+          legalAddress: this.merchant.legalAddress,
+          factAddress: this.merchant.factAddress,
+  
+          merchantId: +this.merchant.id,
+          companyName: this.merchant.companyName,
+          companyType: this.merchant.companyType,
+          password: this.merchant.password,
+          phoneNumber: this.merchant.phoneNumber,
+          email: this.merchant.email,
+          bankAccounts: [
+            { account: +this.signUpForm.value.bankAccount, currencyId: this.signUpForm.value.currency },
+            { account: +this.signUpForm.value.bankAccount2, currencyId: this.signUpForm.value.currency2 },
+          ]
+        });
+      } 
+      else {
+        this.signUpForm.patchValue({
+          responsiblePersonLastName: this.merchant.responsiblePersonLastName,
+          responsiblePersonFistName: this.merchant.responsiblePersonFistName,
+          registrationCertificateFilePath: this.merchant.registrationCertificateFilePath,
+          passportFilePath: this.merchant.passportFilePath,
+          logoFilePath: this.merchant.logoFilePath,
+          responsbilePersonPhoneNumber: this.merchant.responsbilePersonPhoneNumber,
+          supervisorFirstName: this.merchant.supervisorFirstName,
+          supervisorLastName: this.merchant.supervisorLastName,
+          legalAddress: this.merchant.legalAddress,
+          factAddress: this.merchant.factAddress,
+          
+          merchantId: +this.merchant.id,
+          companyName: this.merchant.companyName,
+          companyType: this.merchant.companyType,
+          password: this.merchant.password,
+          phoneNumber: this.merchant.phoneNumber,
+          email: this.merchant.email,
+          bankAccounts: [
+            { account: +this.signUpForm.value.bankAccount, currencyId: this.signUpForm.value.currency }
+          ]
+        });
+      }
       this.signUpForm.enable();
       this.authService.merchantComplete(this.signUpForm.value).subscribe((res: any) => {
         if (res.success) {
@@ -184,7 +180,7 @@ export class Step3Component implements OnInit {
         }
       }, error => {
         this.signUpForm.enable();
-        this.toastr.error(error.message);
+        this.toastr.error(error.error.message);
       })
     }
   }
