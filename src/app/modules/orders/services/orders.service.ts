@@ -10,22 +10,22 @@ export class OrdersService {
   ) { }
 
   getOrders() {
-    return this.http.get(env.orderApiUrl+'/orders/all');
+    return this.http.get(env.apiUrl+'/orders/all');
   }
   getOrdersByMerchant(id,pageSize,pageIndex) {
-    return this.http.get(env.orderApiUrl + '/orders/clients/all-orders?userId=' + id+'&pageSize='+pageSize+'&pageIndex='+pageIndex);
+    return this.http.get(env.apiUrl + '/orders/clients/all-orders?userId=' + id+'&pageSize='+pageSize+'&pageIndex='+pageIndex);
   }
   getOrderById(id) {
-    return this.http.get(env.orderApiUrl + '/orders/clients/order-by-id?orderId=' + id);
+    return this.http.get(env.apiUrl + '/orders/clients/order-by-id?orderId=' + id);
   }
   createOrder(data) {
-    return this.http.post(env.orderApiUrl + '/orders/clients',data)
+    return this.http.post(env.apiUrl + '/orders/clients',data)
   }
   acceptOffer(id) {
     // @ts-ignore
-    return this.http.post(env.orderApiUrl + '/orders/clients/accept-offer?id='+id)
+    return this.http.post(env.apiUrl + '/orders/clients/accept-offer?id='+id)
   }
   contrOffer(data) {
-    return this.http.post(env.orderApiUrl + '/orders/clients/offer-price',data)
+    return this.http.post(env.apiUrl + '/orders/clients/offer-price',data)
   }
 }

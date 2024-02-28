@@ -25,32 +25,32 @@ export class AuthService {
     return localStorage.getItem('merchant') ?? '';
   }
   merchantCreate(data) {
-    return this.http.post(env.authApiUrl + '/register/client-merchant', data);
+    return this.http.post(env.apiUrl + '/users/register/client-merchant', data);
   }
   merchantComplete(data) {
-    return this.http.post(env.authApiUrl + '/register/client-merchant/complete', data);
+    return this.http.post(env.apiUrl + '/users/register/client-merchant/complete', data);
   }
   merchantUpdate(data) {
-    return this.http.post(env.authApiUrl + '/register/client-merchant/step', data);
+    return this.http.post(env.apiUrl + '/users/register/client-merchant/step', data);
   }
   verifyPhone(data) {
-    return this.http.post(env.authApiUrl + '/client-merchant-user/phone-verify', data);
+    return this.http.post(env.apiUrl + '/users/client-merchant-user/phone-verify', data);
   }
   verifyCode(data) {
-    return this.http.post(env.authApiUrl + '/client-merchant-user/verify-code', data);
+    return this.http.post(env.apiUrl + '/users/client-merchant-user/verify-code', data);
   }
   getMerchantById(id) {
-    return this.http.get(env.authApiUrl + '/client-merchant/id?id=' + id);
+    return this.http.get(env.apiUrl + '/users/client-merchant/id?id=' + id);
   }
   resetPassword(data): Observable<any> {
-    return this.http.patch(env.authApiUrl + '/client-merchant-user/reset-password', data);
+    return this.http.patch(env.apiUrl + '/users/client-merchant-user/reset-password', data);
   }
   signIn(credentials: { username: string; password: string,userType: string }) {
     credentials.userType = 'client_merchant_user';
-    return this.http.post(env.authApiUrl + '/login', credentials);
+    return this.http.post(env.apiUrl + '/users/login', credentials);
   }
   sendEmail(email) {
-    return this.http.post(env.authApiUrl + '/client-merchant-user/send-code', email);
+    return this.http.post(env.apiUrl + '/users/client-merchant-user/send-code', email);
   }
   signOut(): Observable<any> {
     localStorage.removeItem('merchant');

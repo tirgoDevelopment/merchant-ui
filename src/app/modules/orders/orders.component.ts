@@ -32,12 +32,12 @@ import { PaginationComponent } from 'app/shared/components/pagination/pagination
 })
 export class OrdersComponent implements OnInit {
 
-  totalPagesCount: number;
+  totalPagesCount: number = 1;
   size: number = 5;
   currentPage: number = 1;
 
   isLoading: boolean = false;
-  dataSource: MatTableDataSource<any>;
+  dataSource: any[];
   displayedColumns: string[] = ['index', 'id', 'sendLocation', 'cargoDeliveryLocation', 'status', 'date_send', 'offeredPrice', 'secure_transaction', 'type_cargo', 'transport_type'];
   currentUser: any;
   private sseSubscription: Subscription;
@@ -71,15 +71,16 @@ export class OrdersComponent implements OnInit {
         this.isLoading = false;
         this.dataSource = res.data;
         this.totalPagesCount = res.totalPagesCount;
-        // this.dataSource.forEach((v) => {
-        //   if (v.driverOffers && Array.isArray(v.driverOffers)) {
-        //     v.driverOffers = v.driverOffers.filter(offer => offer.rejected == false);
-        //   }
-        // })
+        
+        this.dataSource.forEach((v) => {
+          if (v.driverOffers && Array.isArray(v.driverOffers)) {
+            v.driverOffers = v.driverOffers.filter(offer => offer.rejected == false);
+          }
+        })
       }
       else {
         this.isLoading = false;
-        // this.dataSource = [];
+        this.dataSource = [];
       }
     })
     this.isLoading = false;
