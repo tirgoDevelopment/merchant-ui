@@ -30,7 +30,7 @@
       </ng-container>
 
       <ng-container matColumnDef="id">
-        <mat-header-cell class="font-extrabold index-column" *matHeaderCellDef> ID </mat-header-cell>
+        <mat-header-cell class="font-extrabold index-column" *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
         <mat-cell class="index-column" *matCellDef="let row"> {{ row?.id }} </mat-cell>
       </ng-container>
 
@@ -106,7 +106,7 @@
 
     </mat-table>
 
-    <div class="w-full flex justify-center p-2 border" *ngIf="!isLoading && !dataSource?.length">
+    <div class="w-full flex justify-center p-2 border" *ngIf="!isLoading && !dataSource">
       Данные отсутствуют в таблице
     </div>
 
@@ -115,9 +115,10 @@
     </div>
 
     <div class="flex justify-end">
-      <mat-paginator [showFirstLastButtons]="true" [length]="dataSource?.length"
-        [pageSizeOptions]="[10, 20, 50, 100, 200]" showFirstLastButtons>
-      </mat-paginator>
+      <app-pagination [totalPagesCount]="totalPagesCount" [size]="size" [currentPage]="currentPage"
+        (paginationEvent)="onPaginationEvent($event)">
+      </app-pagination>
+     
     </div>
 
   </div>

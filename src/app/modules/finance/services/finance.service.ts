@@ -9,8 +9,8 @@ export class FinanceService {
     private http: HttpClient
   ) { }
   
-  getAll(userId) {
-    return this.http.get(env.financeApiUrl+'/finance/transaction/merchant-transactions?userId='+userId);
+  getAll(user,pageSize, pageIndex ) {
+    return this.http.get(env.financeApiUrl+'/finance/transaction/merchant-transactions?userId='+user.userId+'&pageSize='+pageSize+'&pageIndex='+pageIndex);
   }
   create(data) {
     return this.http.post(env.financeApiUrl+'/finance/transaction',data);

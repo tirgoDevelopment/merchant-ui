@@ -12,8 +12,8 @@ export class OrdersService {
   getOrders() {
     return this.http.get(env.orderApiUrl+'/orders/all');
   }
-  getOrdersByMerchant(id) {
-    return this.http.get(env.orderApiUrl + '/orders/clients/all-orders?userId=' + id);
+  getOrdersByMerchant(id,pageSize,pageIndex) {
+    return this.http.get(env.orderApiUrl + '/orders/clients/all-orders?userId=' + id+'&pageSize='+pageSize+'&pageIndex='+pageIndex);
   }
   getOrderById(id) {
     return this.http.get(env.orderApiUrl + '/orders/clients/order-by-id?orderId=' + id);

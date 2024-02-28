@@ -1,5 +1,5 @@
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -7,10 +7,10 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
@@ -22,6 +22,7 @@ import { jwtDecode } from 'jwt-decode';
 import { SseService } from 'app/shared/services/socket.service';
 import { Subscription } from 'rxjs';
 import { PipesModule } from 'app/shared/pipes/pipes.module';
+import { PaginationComponent } from 'app/shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-finance',
@@ -29,9 +30,13 @@ import { PipesModule } from 'app/shared/pipes/pipes.module';
   styleUrls: ['./finance.component.scss'],
   encapsulation: ViewEncapsulation.None,
   standalone: true,
-  imports: [ReactiveFormsModule, MatSelectModule,PipesModule, FormsModule, MatInputModule, MatDatepickerModule, MatProgressSpinnerModule, DatePipe, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
+  imports: [PaginationComponent, ReactiveFormsModule, MatSelectModule, PipesModule, FormsModule, MatInputModule, MatDatepickerModule, MatProgressSpinnerModule, DatePipe, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
 })
 export class FinanceComponent implements OnInit {
+  totalPagesCount: number;
+  size: number = 5;
+  currentPage: number = 1;
+
   form: FormGroup;
   isLoading: boolean = false;
   dataSource: any;
@@ -79,7 +84,8 @@ export class FinanceComponent implements OnInit {
     })
   }
   getAllTransaction() {
-    this.financeService.getAll(this.currentUser.userId).subscribe((res: any) => {
+    this.financeService.getAll(this.currentUser, this.size, this.currentPage).subscribe((res: any) => {
+      this.totalPagesCount = res.totalPagesCount;
       this.dataSource = res.data;
     })
   }
@@ -92,5 +98,10 @@ export class FinanceComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       this.getAllTransaction();
     });
+  }
+  onPaginationEvent(event: any): void {
+    this.size = event.size;
+    this.currentPage = event.page;
+    this.getAllTransaction();
   }
 }
