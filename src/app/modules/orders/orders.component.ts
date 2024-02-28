@@ -1,5 +1,5 @@
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -7,7 +7,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -20,7 +20,8 @@ import { CreateOrderComponent } from './components/create-order/create-order.com
 import { OrderDetailComponent } from './components/order/order-detail.component';
 import { SseService } from 'app/shared/services/socket.service';
 import { Subscription } from 'rxjs';
-import { PipesModule } from 'app/shared/pipes/pipes.module';
+import { PaginationComponent } from 'app/shared/components/pagination/pagination.component';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'app-orders',
@@ -28,11 +29,17 @@ import { PipesModule } from 'app/shared/pipes/pipes.module';
   styleUrls: ['./orders.component.scss'],
   encapsulation: ViewEncapsulation.None,
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule,DatePipe, MatProgressSpinnerModule, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
+  imports: [PaginationComponent,MatSortModule, ReactiveFormsModule, FormsModule,DatePipe, MatProgressSpinnerModule, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
 })
 export class OrdersComponent implements OnInit {
+  @ViewChild(MatSort) sort: MatSort;
+
+  totalPagesCount: number;
+  size: number = 5;
+  currentPage: number = 1;
+
   isLoading: boolean = false;
-  dataSource: any[];
+  dataSource: MatTableDataSource<any>;
   displayedColumns: string[] = ['index', 'id', 'sendLocation', 'cargoDeliveryLocation', 'status', 'date_send', 'offeredPrice', 'secure_transaction', 'type_cargo', 'transport_type'];
   currentUser: any;
   private sseSubscription: Subscription;
@@ -41,9 +48,15 @@ export class OrdersComponent implements OnInit {
     private orderService: OrdersService,
     private authService: AuthService,
     private dialog: MatDialog,
-    private sseService: SseService
-
+    private sseService: SseService,
+    private ref: ChangeDetectorRef
   ) { }
+
+  ngAfterViewInit() {
+    console.log(this.dataSource);
+    
+    this.dataSource.sort = this.sort;
+  }
   ngOnInit(): void {
     this.currentUser = jwtDecode(this.authService.accessToken);    
     this.getOrders();
@@ -60,19 +73,20 @@ export class OrdersComponent implements OnInit {
   }
   getOrders() {
     this.isLoading = true;
-    this.orderService.getOrdersByMerchant(this.currentUser.userId).subscribe((res: any) => {
+    this.orderService.getOrdersByMerchant(this.currentUser.userId,this.size, this.currentPage).subscribe((res: any) => {
       if (res && res.success) {
         this.isLoading = false;
         this.dataSource = res.data;
-        this.dataSource.forEach((v) => {
-          if (v.driverOffers && Array.isArray(v.driverOffers)) {
-            v.driverOffers = v.driverOffers.filter(offer => offer.rejected == false);
-          }
-        })
+        this.totalPagesCount = res.totalPagesCount;
+        // this.dataSource.forEach((v) => {
+        //   if (v.driverOffers && Array.isArray(v.driverOffers)) {
+        //     v.driverOffers = v.driverOffers.filter(offer => offer.rejected == false);
+        //   }
+        // })
       }
       else {
         this.isLoading = false;
-        this.dataSource = [];
+        // this.dataSource = [];
       }
     })
     this.isLoading = false;
@@ -82,7 +96,6 @@ export class OrdersComponent implements OnInit {
     result.setDate(result.getDate() + 2);
     return result;
   }
- 
   createOrderModal() {
     const dialogRef = this.dialog.open(CreateOrderComponent, {
       autoFocus: false,
@@ -108,4 +121,10 @@ export class OrdersComponent implements OnInit {
       this.getOrders();
     });
   }
+  onPaginationEvent(event: any): void {
+    this.size = event.size;
+    this.currentPage = event.page;
+    this.getOrders()
+  }
+  
 }

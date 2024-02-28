@@ -130,9 +130,13 @@
     </div>
 
     <div class="flex justify-end">
-      <mat-paginator [showFirstLastButtons]="true" [length]="dataSource?.length"
+      <app-pagination [totalPagesCount]="totalPagesCount" [size]="size" [currentPage]="currentPage"
+        (paginationEvent)="onPaginationEvent($event)">
+      </app-pagination>
+
+      <!-- <mat-paginator [showFirstLastButtons]="true" [length]="dataSource?.length"
         [pageSizeOptions]="[10, 20, 50, 100, 200]" showFirstLastButtons>
-      </mat-paginator>
+      </mat-paginator> -->
     </div>
 
   </div>
