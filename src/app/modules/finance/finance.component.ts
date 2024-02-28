@@ -33,7 +33,7 @@ import { PaginationComponent } from 'app/shared/components/pagination/pagination
   imports: [PaginationComponent, ReactiveFormsModule, MatSelectModule, PipesModule, FormsModule, MatInputModule, MatDatepickerModule, MatProgressSpinnerModule, DatePipe, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
 })
 export class FinanceComponent implements OnInit {
-  totalPagesCount: number;
+  totalPagesCount: number = 1;
   size: number = 5;
   currentPage: number = 1;
 

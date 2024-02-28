@@ -10,12 +10,12 @@ export class FinanceService {
   ) { }
   
   getAll(user,pageSize, pageIndex ) {
-    return this.http.get(env.financeApiUrl+'/finance/transaction/merchant-transactions?userId='+user.userId+'&pageSize='+pageSize+'&pageIndex='+pageIndex);
+    return this.http.get(env.apiUrl+'/finance/transaction/merchant-transactions?userId='+user.userId+'&pageSize='+pageSize+'&pageIndex='+pageIndex);
   }
   create(data) {
-    return this.http.post(env.financeApiUrl+'/finance/transaction',data);
+    return this.http.post(env.apiUrl+'/finance/transaction',data);
   }
   getBalance(id) {
-    return this.http.get(env.financeApiUrl+'/finance/transaction/merchant-balance?merchantId='+id);
+    return this.http.get(env.apiUrl+'/finance/transaction/merchant-balance?merchantId='+id);
   }
 }

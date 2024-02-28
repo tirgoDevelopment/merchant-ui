@@ -106,7 +106,7 @@
 
     </mat-table>
 
-    <div class="w-full flex justify-center p-2 border" *ngIf="!isLoading && !dataSource">
+    <div class="w-full flex justify-center p-2 border" *ngIf="!isLoading && !dataSource?.length">
       Данные отсутствуют в таблице
     </div>
 

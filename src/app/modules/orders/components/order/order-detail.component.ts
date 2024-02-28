@@ -47,6 +47,8 @@ export class OrderDetailComponent implements OnInit {
     private toastr: ToastrService
   ) { }
   ngOnInit(): void {
+    console.log(this.data);
+    
     this.typesService.getCurrencies().subscribe((res: any) => {
       if (res.success) {
         this.currencies = res.data;
