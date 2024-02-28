@@ -1,5 +1,5 @@
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -21,7 +21,6 @@ import { OrderDetailComponent } from './components/order/order-detail.component'
 import { SseService } from 'app/shared/services/socket.service';
 import { Subscription } from 'rxjs';
 import { PaginationComponent } from 'app/shared/components/pagination/pagination.component';
-import { MatSort, MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'app-orders',
@@ -29,10 +28,9 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
   styleUrls: ['./orders.component.scss'],
   encapsulation: ViewEncapsulation.None,
   standalone: true,
-  imports: [PaginationComponent,MatSortModule, ReactiveFormsModule, FormsModule,DatePipe, MatProgressSpinnerModule, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
+  imports: [PaginationComponent, ReactiveFormsModule, FormsModule,DatePipe, MatProgressSpinnerModule, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
 })
 export class OrdersComponent implements OnInit {
-  @ViewChild(MatSort) sort: MatSort;
 
   totalPagesCount: number;
   size: number = 5;
@@ -52,11 +50,6 @@ export class OrdersComponent implements OnInit {
     private ref: ChangeDetectorRef
   ) { }
 
-  ngAfterViewInit() {
-    console.log(this.dataSource);
-    
-    this.dataSource.sort = this.sort;
-  }
   ngOnInit(): void {
     this.currentUser = jwtDecode(this.authService.accessToken);    
     this.getOrders();
