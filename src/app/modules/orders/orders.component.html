@@ -1,20 +1,59 @@
 <div class="flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent p-4">
-  <div class="flex">
+  <div class="flex justify-between">
     <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
       <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
     </div>
     <div class="text-3xl font-bold tracking-tight">Грузы</div>
+    <div class="flex justify-end gap-2">
+      <button class="fuse-mat-button-large dark" mat-flat-button [color]="'primary'" (click)="showFilter = !showFilter">
+        <mat-icon>search</mat-icon>
+        Поиск
+      </button>
+      <button (click)="createOrderModal()" class="fuse-mat-button-large dark" mat-flat-button [color]="'primary'">
+        <mat-icon>add</mat-icon>
+        Разместить груз
+      </button>
+    </div>
   </div>
 
-  <div class="flex justify-between my-4">
-    <div class="filter"></div>
-    <button (click)="createOrderModal()" class="fuse-mat-button-large dark" mat-flat-button [color]="'primary'">
-      <mat-icon>add</mat-icon>
-      Разместить груз
+  <div class="filter flex items-center gap-2" [@showHideFilter]="showFilter ? 'show' : 'hide'">
+    <div>
+      <mat-form-field class="flex-auto">
+        <mat-label>Груз ID</mat-label>
+        <input type="number" matInput [(ngModel)]="filter.orderId">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field class="flex-auto">
+        <mat-label>Статус</mat-label>
+        <mat-select [(ngModel)]="filter.statusId">
+          <mat-option [value]="0">Ожидающий</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field class="flex-auto">
+        <mat-label>Откуда</mat-label>
+        <input type="text" matInput [(ngModel)]="filter.loadingLocation">
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field class="flex-auto">
+        <mat-label>Куда</mat-label>
+        <input type="text" matInput [(ngModel)]="filter.deliveryLocation">
+      </mat-form-field>
+    </div>
+
+    <button (click)="resetSearch()" class="fuse-mat-button-large dark" mat-flat-button [color]="'primary'">
+      <mat-icon>refresh</mat-icon>
+    </button>
+    <button (click)="applyFilter()" class="fuse-mat-button-large dark" mat-flat-button [color]="'primary'">
+      <mat-icon>search</mat-icon>
     </button>
   </div>
 
-  <div>
+  <div class="my-6" *ngIf="!isLoading">
     <mat-table matSort [dataSource]="dataSource" class="table">
       <ng-container matColumnDef="index">
         <mat-header-cell class="font-extrabold index-column " *matHeaderCellDef> No </mat-header-cell>
@@ -110,17 +149,17 @@
       Данные отсутствуют в таблице
     </div>
 
-    <div class="w-full flex justify-center p-2 border" *ngIf="isLoading">
-      <mat-progress-spinner [diameter]="32" [mode]="'indeterminate'"></mat-progress-spinner>
-    </div>
+    
 
     <div class="flex justify-end">
       <app-pagination [totalPagesCount]="totalPagesCount" [size]="size" [currentPage]="currentPage"
         (paginationEvent)="onPaginationEvent($event)">
       </app-pagination>
-     
+
     </div>
 
   </div>
-
+  <div class="w-full flex justify-center p-2 border my-6" *ngIf="isLoading">
+    <mat-progress-spinner [diameter]="36" [mode]="'indeterminate'"></mat-progress-spinner>
+  </div>
 </div>

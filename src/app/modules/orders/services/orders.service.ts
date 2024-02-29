@@ -12,8 +12,13 @@ export class OrdersService {
   getOrders() {
     return this.http.get(env.apiUrl+'/orders/all');
   }
-  getOrdersByMerchant(id,pageSize,pageIndex) {
-    return this.http.get(env.apiUrl + '/orders/clients/all-orders?userId=' + id+'&pageSize='+pageSize+'&pageIndex='+pageIndex);
+  // +'&sortBy='+ 'id'+'&sortType='+'ASC'
+  getOrdersByMerchant(id: string, pag: { size: number, currentPage: number }, filter?: string) {
+    let url = `${env.apiUrl}/orders/clients/all-orders?userId=${id}&pageSize=${pag.size}&pageIndex=${pag.currentPage}`;
+    if (filter) {
+      url += `&${filter}`;
+    }
+    return this.http.get(url);
   }
   getOrderById(id) {
     return this.http.get(env.apiUrl + '/orders/clients/order-by-id?orderId=' + id);
