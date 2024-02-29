@@ -7,7 +7,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -21,6 +21,9 @@ import { OrderDetailComponent } from './components/order/order-detail.component'
 import { SseService } from 'app/shared/services/socket.service';
 import { Subscription } from 'rxjs';
 import { PaginationComponent } from 'app/shared/components/pagination/pagination.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-orders',
@@ -28,18 +31,34 @@ import { PaginationComponent } from 'app/shared/components/pagination/pagination
   styleUrls: ['./orders.component.scss'],
   encapsulation: ViewEncapsulation.None,
   standalone: true,
-  imports: [PaginationComponent, ReactiveFormsModule, FormsModule,DatePipe, MatProgressSpinnerModule, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
+  imports: [PaginationComponent, MatInputModule, MatSelectModule, ReactiveFormsModule, FormsModule, DatePipe, MatProgressSpinnerModule, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
+  animations: [
+    trigger('showHideFilter', [
+      state('show', style({
+        height: '*',
+        opacity: 1,
+        visibility: 'visible'
+      })),
+      state('hide', style({
+        height: '0',
+        opacity: 0,
+        visibility: 'hidden'
+      })),
+      transition('show <=> hide', animate('300ms ease-in-out'))
+    ])
+  ]
 })
 export class OrdersComponent implements OnInit {
 
   totalPagesCount: number = 1;
   size: number = 5;
   currentPage: number = 1;
-
+  showFilter:boolean = false;
   isLoading: boolean = false;
   dataSource: any[];
   displayedColumns: string[] = ['index', 'id', 'sendLocation', 'cargoDeliveryLocation', 'status', 'date_send', 'offeredPrice', 'secure_transaction', 'type_cargo', 'transport_type'];
   currentUser: any;
+  filter = { userId: null, clientId: null, orderId: null, statusId: null, loadingLocation: null, deliveryLocation: null, transportKindId: null, transportTypeId: null, createAt: null, sendDate: null }
   private sseSubscription: Subscription;
 
   constructor(
@@ -51,7 +70,7 @@ export class OrdersComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.currentUser = jwtDecode(this.authService.accessToken);    
+    this.currentUser = jwtDecode(this.authService.accessToken);
     this.getOrders();
     this.sseSubscription = this.sseService.getUpdates().subscribe(
       (data) => {
@@ -64,26 +83,33 @@ export class OrdersComponent implements OnInit {
       }
     );
   }
-  getOrders() {
+  getOrders(filter?: any) {
+    let pagination = { size: this.size, currentPage: this.currentPage };
     this.isLoading = true;
-    this.orderService.getOrdersByMerchant(this.currentUser.userId,this.size, this.currentPage).subscribe((res: any) => {
+
+    let request;
+    if (filter) {
+      request = this.orderService.getOrdersByMerchant(this.currentUser.userId, pagination, filter);
+    } else {
+      request = this.orderService.getOrdersByMerchant(this.currentUser.userId, pagination);
+    }
+
+    request.subscribe((res: any) => {
       if (res && res.success) {
         this.isLoading = false;
         this.dataSource = res.data;
         this.totalPagesCount = res.totalPagesCount;
-        
+
         this.dataSource.forEach((v) => {
           if (v.driverOffers && Array.isArray(v.driverOffers)) {
             v.driverOffers = v.driverOffers.filter(offer => offer.rejected == false);
           }
-        })
-      }
-      else {
+        });
+      } else {
         this.isLoading = false;
         this.dataSource = [];
       }
-    })
-    this.isLoading = false;
+    });
   }
   addTwoDays(date: Date): Date {
     const result = new Date(date);
@@ -120,5 +146,26 @@ export class OrdersComponent implements OnInit {
     this.currentPage = event.page;
     this.getOrders()
   }
-  
+  generateFilterPath(filter: any) {
+    let url = '';
+    for (const key in filter) {
+      if (filter[key] !== null && filter[key] !== undefined) {
+        url += `&${key}=${encodeURIComponent(filter[key])}`;
+      }
+    }
+    this.getOrders()
+    return url.length > 0 ? url.substr(1) : url;
+  }
+  applyFilter() {
+    if (this.filter) {
+      const filterPath = this.generateFilterPath(this.filter);
+      this.getOrders(filterPath);
+    }
+  }
+  resetSearch() {
+    if (this.filter) {
+      this.filter = { userId: null, clientId: null, orderId: null, statusId: null, loadingLocation: null, deliveryLocation: null, transportKindId: null, transportTypeId: null, createAt: null, sendDate: null }
+      this.getOrders();
+    }
+  }
 }
