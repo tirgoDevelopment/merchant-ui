@@ -23,6 +23,7 @@ import { SseService } from 'app/shared/services/socket.service';
 import { Subscription } from 'rxjs';
 import { PipesModule } from 'app/shared/pipes/pipes.module';
 import { PaginationComponent } from 'app/shared/components/pagination/pagination.component';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-finance',
@@ -30,23 +31,49 @@ import { PaginationComponent } from 'app/shared/components/pagination/pagination
   styleUrls: ['./finance.component.scss'],
   encapsulation: ViewEncapsulation.None,
   standalone: true,
-  imports: [PaginationComponent, ReactiveFormsModule, MatSelectModule, PipesModule, FormsModule, MatInputModule, MatDatepickerModule, MatProgressSpinnerModule, DatePipe, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
+  imports: [PaginationComponent, ReactiveFormsModule,MatDatepickerModule, MatSelectModule, PipesModule, FormsModule, MatInputModule, MatDatepickerModule, MatProgressSpinnerModule, DatePipe, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
+  animations: [
+    trigger('showHideFilter', [
+      state('show', style({
+        height: '*',
+        opacity: 1,
+        visibility: 'visible'
+      })),
+      state('hide', style({
+        height: '0',
+        opacity: 0,
+        visibility: 'hidden'
+      })),
+      transition('show <=> hide', animate('300ms ease-in-out'))
+    ])
+  ]
 })
 export class FinanceComponent implements OnInit {
   totalPagesCount: number = 1;
   size: number = 5;
   currentPage: number = 1;
+  showFilter: boolean = false;
 
-  form: FormGroup;
   isLoading: boolean = false;
   dataSource: any;
-  displayedColumns: string[] = ['index', 'id', 'status', 'full_name', 'type', 'amount', 'created_at', "comment"];
+  displayedColumns: string[] = ['index', 'id', 'status', 'createdBy', 'type', 'amount', 'created_at', "comment"];
   currentUser: any = { activeBalance: '', frozenbalance: '' };
   balances: any;
+  filter = { fromDate: null, toDate: null, transactionType: null }
+  filterPath: string;
+  sortColumn: string;
+  sortDirection: string;
+  sortOptions: { [key: string]: { column: string, direction: string } } = {
+    id: { column: 'id', direction: null },
+    transctionType: { column: 'transctionType', direction: null },
+    createdBy: { column: 'createdBy', direction: null },
+    created_at: { column: 'created_at', direction: null },
+    amount: { column: 'amount', direction: null },
+    comment: { column: 'comment', direction: null },
+  };
   private sseSubscription: Subscription;
 
   constructor(
-    private formBuilder: FormBuilder,
     private financeService: FinanceService,
     private dialog: MatDialog,
     private sseService: SseService,
@@ -57,11 +84,6 @@ export class FinanceComponent implements OnInit {
   }
   ngOnInit(): void {
     this.currentUser = jwtDecode(localStorage.getItem('merchant'));
-    this.form = this.formBuilder.group({
-      from: [''],
-      to: [''],
-      type: ['']
-    })
     this.sseSubscription = this.sseService.getUpdates().subscribe(
       (data) => {
         if (data.type == 'transactionVerified' || data.type == 'transactionRejected') {
@@ -83,11 +105,36 @@ export class FinanceComponent implements OnInit {
       }
     })
   }
-  getAllTransaction() {
-    this.financeService.getAll(this.currentUser, this.size, this.currentPage).subscribe((res: any) => {
-      this.totalPagesCount = res.totalPagesCount;
-      this.dataSource = res.data;
-    })
+  getAllTransaction(filter?: any, sortBy?: string, sortType?: string) {
+    let pagination = { size: this.size, currentPage: this.currentPage };
+    this.isLoading = true;
+    let request;
+    
+    if (sortBy !== null && sortType !== null) {
+      if (filter !== null) {
+        request = this.financeService.getAll(this.currentUser.userId, pagination, filter, sortBy, sortType);
+      } else {
+        request = this.financeService.getAll(this.currentUser.userId, pagination, null, sortBy, sortType);
+      }
+    } else {
+      request = this.financeService.getAll(this.currentUser.userId, pagination, filter);
+    }
+
+    request.subscribe((res: any) => {
+      if (res && res.success) {
+        this.isLoading = false;
+        this.dataSource = res.data;
+        this.totalPagesCount = res.totalPagesCount;
+        this.dataSource.forEach((v) => {
+          if (v.driverOffers && Array.isArray(v.driverOffers)) {
+            v.driverOffers = v.driverOffers.filter(offer => offer.rejected == false);
+          }
+        });
+      } else {
+        this.isLoading = false;
+        this.dataSource = [];
+      }
+    });
   }
   createModal(type) {
     const dialogRef = this.dialog.open(CreateTransactionComponent, {
@@ -103,5 +150,51 @@ export class FinanceComponent implements OnInit {
     this.size = event.size;
     this.currentPage = event.page;
     this.getAllTransaction();
+  }
+  generateFilterPath(filter: any) {
+    let url = '';
+    for (const key in filter) {
+      if (filter[key] !== null && filter[key] !== undefined) {
+        url += `&${key}=${encodeURIComponent(filter[key])}`;
+      }
+    }
+    this.getAllTransaction()
+    return url.length > 0 ? url.substr(1) : url;
+  }
+  applyFilter() {
+    console.log(this.filter);
+    
+    if (this.filter) {
+      this.filterPath = this.generateFilterPath(this.filter);
+      this.getAllTransaction(this.filterPath, this.sortColumn, this.sortDirection);
+    }
+  }
+  resetSearch() {
+    if (this.filter) {
+      this.filter = { fromDate: null, toDate: null, transactionType: null };
+      this.getAllTransaction(this.filterPath, this.sortColumn, this.sortDirection);
+    }
+  }
+  sortData(filter: string): void {
+    const currentSortOption = this.sortOptions[filter];
+    if (currentSortOption.direction === null) {
+      currentSortOption.direction = 'asc';
+    } else if (currentSortOption.direction === 'asc') {
+      currentSortOption.direction = 'desc';
+    } else {
+      currentSortOption.direction = null;
+    }
+    this.sortColumn = filter;
+    this.sortDirection = currentSortOption.direction;
+    this.getAllTransaction(this.filterPath, this.sortColumn, this.sortDirection);
+  }
+  getSortIcon(filter: string): string {
+    const currentSortOption = this.sortOptions[filter];
+    if (currentSortOption.column === this.sortColumn && currentSortOption.direction === 'asc') {
+      return 'arrow_upward';
+    } else if (currentSortOption.column === this.sortColumn && currentSortOption.direction === 'desc') {
+      return 'arrow_downward';
+    }
+    return 'unfold_more';
   }
 }

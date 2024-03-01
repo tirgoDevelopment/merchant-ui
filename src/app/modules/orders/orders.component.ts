@@ -24,6 +24,7 @@ import { PaginationComponent } from 'app/shared/components/pagination/pagination
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { TypesService } from 'app/shared/services/types.service';
 
 @Component({
   selector: 'app-orders',
@@ -49,29 +50,41 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   ]
 })
 export class OrdersComponent implements OnInit {
-
+  statuses: any;
   totalPagesCount: number = 1;
   size: number = 5;
   currentPage: number = 1;
-  showFilter:boolean = false;
+  showFilter: boolean = false;
   isLoading: boolean = false;
   dataSource: any[];
-  displayedColumns: string[] = ['index', 'id', 'sendLocation', 'cargoDeliveryLocation', 'status', 'date_send', 'offeredPrice', 'secure_transaction', 'type_cargo', 'transport_type'];
+  displayedColumns: string[] = ['index', 'id', 'loadingLocation', 'deliveryLocation', 'cargoStatus', 'sendDate', 'offeredPrice', 'isSafe', 'type_cargo', 'transport_type'];
   currentUser: any;
   filter = { userId: null, clientId: null, orderId: null, statusId: null, loadingLocation: null, deliveryLocation: null, transportKindId: null, transportTypeId: null, createAt: null, sendDate: null }
   private sseSubscription: Subscription;
-
+  filterPath: string;
+  sortColumn: string;
+  sortDirection: string;
+  sortOptions: { [key: string]: { column: string, direction: string } } = {
+    id: { column: 'id', direction: null },
+    loadingLocation: { column: 'loadingLocation', direction: null },
+    deliveryLocation: { column: 'deliveryLocation', direction: null },
+    cargoStatus: { column: 'cargoStatus', direction: null },
+    sendDate: { column: 'sendDate', direction: null },
+    offeredPrice: { column: 'offeredPrice', direction: null },
+    isSafe: { column: 'isSafe', direction: null },
+  };
   constructor(
     private orderService: OrdersService,
     private authService: AuthService,
+    private typesService: TypesService,
     private dialog: MatDialog,
-    private sseService: SseService,
-    private ref: ChangeDetectorRef
+    private sseService: SseService
   ) { }
 
   ngOnInit(): void {
     this.currentUser = jwtDecode(this.authService.accessToken);
     this.getOrders();
+    this.getStatuses();
     this.sseSubscription = this.sseService.getUpdates().subscribe(
       (data) => {
         if (data.type == 'driverAcceptOffer' || data.type == 'driverOffer' || data.type == 'driverOffer') {
@@ -83,15 +96,18 @@ export class OrdersComponent implements OnInit {
       }
     );
   }
-  getOrders(filter?: any) {
+  getOrders(filter?: any, sortBy?: string, sortType?: string) {
     let pagination = { size: this.size, currentPage: this.currentPage };
     this.isLoading = true;
-
     let request;
-    if (filter) {
-      request = this.orderService.getOrdersByMerchant(this.currentUser.userId, pagination, filter);
+    if (sortBy !== null && sortType !== null) {
+      if (filter !== null) {
+        request = this.orderService.getOrdersByMerchant(this.currentUser.userId, pagination, filter, sortBy, sortType);
+      } else {
+        request = this.orderService.getOrdersByMerchant(this.currentUser.userId, pagination, null, sortBy, sortType);
+      }
     } else {
-      request = this.orderService.getOrdersByMerchant(this.currentUser.userId, pagination);
+      request = this.orderService.getOrdersByMerchant(this.currentUser.userId, pagination, filter);
     }
 
     request.subscribe((res: any) => {
@@ -99,7 +115,6 @@ export class OrdersComponent implements OnInit {
         this.isLoading = false;
         this.dataSource = res.data;
         this.totalPagesCount = res.totalPagesCount;
-
         this.dataSource.forEach((v) => {
           if (v.driverOffers && Array.isArray(v.driverOffers)) {
             v.driverOffers = v.driverOffers.filter(offer => offer.rejected == false);
@@ -111,6 +126,13 @@ export class OrdersComponent implements OnInit {
       }
     });
   }
+  getStatuses() {
+    this.typesService.getStatuses().subscribe((res: any) => {
+      if (res.success) {
+        this.statuses = res.data;
+      }
+    })
+  }
   addTwoDays(date: Date): Date {
     const result = new Date(date);
     result.setDate(result.getDate() + 2);
@@ -121,9 +143,11 @@ export class OrdersComponent implements OnInit {
       autoFocus: false,
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe(result => {
-      this.getOrders();
-    });
+    // dialogRef.afterClosed().subscribe(result => {
+    //   console.log(result);
+
+    //   this.getOrders();
+    // });
   }
   showOrderDetails(order) {
     const dialogRef = this.dialog.open(OrderDetailComponent, {
@@ -158,8 +182,8 @@ export class OrdersComponent implements OnInit {
   }
   applyFilter() {
     if (this.filter) {
-      const filterPath = this.generateFilterPath(this.filter);
-      this.getOrders(filterPath);
+      this.filterPath = this.generateFilterPath(this.filter);
+      this.getOrders(this.filterPath, this.sortColumn, this.sortDirection);
     }
   }
   resetSearch() {
@@ -168,4 +192,27 @@ export class OrdersComponent implements OnInit {
       this.getOrders();
     }
   }
+  sortData(filter: string): void {
+    const currentSortOption = this.sortOptions[filter];
+    if (currentSortOption.direction === null) {
+      currentSortOption.direction = 'asc';
+    } else if (currentSortOption.direction === 'asc') {
+      currentSortOption.direction = 'desc';
+    } else {
+      currentSortOption.direction = null;
+    }
+    this.sortColumn = filter;
+    this.sortDirection = currentSortOption.direction;
+    this.getOrders(this.filterPath, this.sortColumn, this.sortDirection);
+  }
+  getSortIcon(filter: string): string {
+    const currentSortOption = this.sortOptions[filter];
+    if (currentSortOption.column === this.sortColumn && currentSortOption.direction === 'asc') {
+      return 'arrow_upward';
+    } else if (currentSortOption.column === this.sortColumn && currentSortOption.direction === 'desc') {
+      return 'arrow_downward';
+    }
+    return 'unfold_more';
+  }
+
 }

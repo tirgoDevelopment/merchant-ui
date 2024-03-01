@@ -9,8 +9,15 @@ export class FinanceService {
     private http: HttpClient
   ) { }
   
-  getAll(user,pageSize, pageIndex ) {
-    return this.http.get(env.apiUrl+'/finance/transaction/merchant-transactions?userId='+user.userId+'&pageSize='+pageSize+'&pageIndex='+pageIndex);
+  getAll(user,pag, filter?,sortBy?,sortType? ) {
+    let url = `${env.apiUrl}/finance/transaction/merchant-transactions?userId=${user}&pageSize=${pag.size}&pageIndex=${pag.currentPage}`;
+    if (filter) {
+      url += `&${filter}`;
+    }
+    if (sortBy && sortType) {
+      url += `&sortBy=${sortBy}&sortType=${sortType}`;
+    }
+    return this.http.get(url);
   }
   create(data) {
     return this.http.post(env.apiUrl+'/finance/transaction',data);
