@@ -13,22 +13,15 @@
 ::ng-deep input[type=number] {
   -moz-appearance: textfield !important;
 }
-::ng-deep .table {
-  overflow-x: auto !important;
-}
 ::ng-deep .mdc-data-table__table {
   border: 1px solid #E3E3E3 !important;
 }
 ::ng-deep mat-header-cell {
   padding: 16px 0;
-  border-right: 1px solid #E3E3E3;
-  border-left: 1px solid #E3E3E3;
 }
 ::ng-deep mat-cell {
   font-weight: 800;
   padding: 16px 0;
-  border-right: 1px solid #E3E3E3;
-  border-left: 1px solid #E3E3E3;
 }
 :host ::ng-deep mat-row:hover {
   background: #E8E8E8 !important;

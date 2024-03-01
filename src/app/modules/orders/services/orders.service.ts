@@ -1,3 +1,4 @@
+import { useAnimation } from "@angular/animations";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { env } from "environments/environment";
@@ -12,11 +13,13 @@ export class OrdersService {
   getOrders() {
     return this.http.get(env.apiUrl+'/orders/all');
   }
-  // +'&sortBy='+ 'id'+'&sortType='+'ASC'
-  getOrdersByMerchant(id: string, pag: { size: number, currentPage: number }, filter?: string) {
+  getOrdersByMerchant(id: string, pag: { size: number, currentPage: number }, filter?: string, sortBy?: string, sortType?: string) {
     let url = `${env.apiUrl}/orders/clients/all-orders?userId=${id}&pageSize=${pag.size}&pageIndex=${pag.currentPage}`;
     if (filter) {
       url += `&${filter}`;
+    }
+    if (sortBy && sortType) {
+      url += `&sortBy=${sortBy}&sortType=${sortType}`;
     }
     return this.http.get(url);
   }
