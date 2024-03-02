@@ -96,7 +96,7 @@ export class AuthSignUpComponent implements OnInit {
       this.authService.merchantCreate(this.signUpForm.value).subscribe((res: any) => {
         if (res.success) {
           this.signUpForm.enable();
-          this.authService.signIn({ username: this.signUpForm.value.email, password: this.signUpForm.value.password,userType: 'client_merchant_user'}).subscribe((res:any)=> {
+          this.authService.signIn({ username: this.signUpForm.value.email, password: this.signUpForm.value.password, userType: 'client_merchant_user' }).subscribe((res: any) => {
             this.authService.accessToken = res.data.token;
             let user: any = jwtDecode(res.data.token);
             this.authService.getMerchantById(user.merchantId).subscribe((merchant: any) => {
@@ -110,6 +110,10 @@ export class AuthSignUpComponent implements OnInit {
         if (error.error.message == "email must be an email") {
           this.signUpForm.enable();
           this.toastr.error('Неверный формат электронной почты');
+        }
+        else {
+          this.signUpForm.enable();
+          this.toastr.error(error.error.message);
         }
       })
     }

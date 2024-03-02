@@ -137,7 +137,7 @@
       </ng-container>
 
       <ng-container matColumnDef="type_cargo">
-        <mat-header-cell class="cursor-pointer flex justify-between" *matHeaderCellDef (click)="sortData('id')">
+        <mat-header-cell *matHeaderCellDef>
           Тип груза
         </mat-header-cell>
         <mat-cell *matCellDef="let row">
@@ -161,29 +161,23 @@
         <mat-cell *matCellDef="let row">{{ row.volume ? row.volume : 'Не указана' }}</mat-cell>
       </ng-container>
 
-
-
       <ng-container matColumnDef="date_create">
         <mat-header-cell *matHeaderCellDef>Дата создания</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.createdAt | date : 'dd.MM.YYYY'}}</mat-cell>
       </ng-container>
 
-
-
       <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns; let i=index" (click)="showOrderDetails(row)"></mat-row>
 
     </mat-table>
-
+    <div class="w-full flex justify-center p-2 border" *ngIf="!isLoading && !dataSource?.length">
+      Данные отсутствуют в таблице
+    </div>
     <div class="flex justify-end">
       <app-pagination [totalPagesCount]="totalPagesCount" [size]="size" [currentPage]="currentPage"
         (paginationEvent)="onPaginationEvent($event)">
       </app-pagination>
     </div>
-    <div class="w-full flex justify-center p-2 border" *ngIf="!isLoading && !dataSource?.length">
-      Данные отсутствуют в таблице
-    </div>
-
   </div>
   <div class="w-full flex justify-center p-2 border my-6" *ngIf="isLoading">
     <mat-progress-spinner [diameter]="42" [mode]="'indeterminate'"></mat-progress-spinner>
