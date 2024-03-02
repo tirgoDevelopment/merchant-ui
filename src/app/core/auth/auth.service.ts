@@ -14,7 +14,6 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private _userService: UserService,
     private router: Router
   ) {
   }
@@ -25,13 +24,13 @@ export class AuthService {
     return localStorage.getItem('merchant') ?? '';
   }
   merchantCreate(data) {
-    return this.http.post(env.apiUrl + '/users/register/client-merchant', data);
+    return this.http.post(env.apiUrl + '/users/client-merchants/register', data);
   }
   merchantComplete(data) {
-    return this.http.post(env.apiUrl + '/users/register/client-merchant/complete', data);
+    return this.http.post(env.apiUrl + '/users/client-merchants/register/complete', data);
   }
   merchantUpdate(data) {
-    return this.http.post(env.apiUrl + '/users/register/client-merchant/step', data);
+    return this.http.post(env.apiUrl + '/users/client-merchants/register/step', data);
   }
   verifyPhone(data) {
     return this.http.post(env.apiUrl + '/users/client-merchant-user/phone-verify', data);
@@ -40,7 +39,7 @@ export class AuthService {
     return this.http.post(env.apiUrl + '/users/client-merchant-user/verify-code', data);
   }
   getMerchantById(id) {
-    return this.http.get(env.apiUrl + '/users/client-merchant/id?id=' + id);
+    return this.http.get(env.apiUrl + '/users/client-merchants/client-merchant-by?id=' + id);
   }
   resetPassword(data): Observable<any> {
     return this.http.patch(env.apiUrl + '/users/client-merchant-user/reset-password', data);

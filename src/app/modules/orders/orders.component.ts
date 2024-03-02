@@ -19,7 +19,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CreateOrderComponent } from './components/create-order/create-order.component';
 import { OrderDetailComponent } from './components/order/order-detail.component';
 import { SseService } from 'app/shared/services/socket.service';
-import { Subscription } from 'rxjs';
+import { Subscription, catchError, map, of, switchMap } from 'rxjs';
 import { PaginationComponent } from 'app/shared/components/pagination/pagination.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -97,35 +97,37 @@ export class OrdersComponent implements OnInit {
     );
   }
   getOrders(filter?: any, sortBy?: string, sortType?: string) {
-    let pagination = { size: this.size, currentPage: this.currentPage };
     this.isLoading = true;
-    let request;
-    if (sortBy !== null && sortType !== null) {
-      if (filter !== null) {
-        request = this.orderService.getOrdersByMerchant(this.currentUser.userId, pagination, filter, sortBy, sortType);
-      } else {
-        request = this.orderService.getOrdersByMerchant(this.currentUser.userId, pagination, null, sortBy, sortType);
-      }
-    } else {
-      request = this.orderService.getOrdersByMerchant(this.currentUser.userId, pagination, filter);
-    }
-
-    request.subscribe((res: any) => {
-      if (res && res.success) {
+    const pagination = { size: this.size, currentPage: this.currentPage };
+  
+    const request$ = of({ filter, sortBy, sortType }).pipe(
+      switchMap(({ filter, sortBy, sortType }) => {
+        const requestParams = { filter, sortBy, sortType };
+        return this.orderService.getOrdersByMerchant(this.currentUser.userId, pagination, filter, sortBy, sortType).pipe(
+          map((res: any) => ({ success: res.success, data: res.data, totalPagesCount: res.totalPagesCount })),
+          catchError(() => of({ success: false, data: [], totalPagesCount: 0 }))
+        );
+      })
+    );
+  
+    request$.subscribe({
+      next: ({ success, data, totalPagesCount }) => {
         this.isLoading = false;
-        this.dataSource = res.data;
-        this.totalPagesCount = res.totalPagesCount;
-        this.dataSource.forEach((v) => {
+        this.dataSource = success ? data : [];
+        this.totalPagesCount = totalPagesCount;
+        this.dataSource.forEach(v => {
           if (v.driverOffers && Array.isArray(v.driverOffers)) {
-            v.driverOffers = v.driverOffers.filter(offer => offer.rejected == false);
+            v.driverOffers = v.driverOffers.filter(offer => !offer.rejected);
           }
         });
-      } else {
+      },
+      error: () => {
         this.isLoading = false;
         this.dataSource = [];
       }
     });
   }
+  
   getStatuses() {
     this.typesService.getStatuses().subscribe((res: any) => {
       if (res.success) {
@@ -143,11 +145,9 @@ export class OrdersComponent implements OnInit {
       autoFocus: false,
       disableClose: true,
     });
-    // dialogRef.afterClosed().subscribe(result => {
-    //   console.log(result);
-
-    //   this.getOrders();
-    // });
+    dialogRef.afterClosed().subscribe(result => {
+      this.getOrders();
+    });
   }
   showOrderDetails(order) {
     const dialogRef = this.dialog.open(OrderDetailComponent, {
