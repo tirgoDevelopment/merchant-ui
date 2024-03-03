@@ -43,7 +43,7 @@
       </button>
     </mat-form-field>
 
-    <button (click)="changePassword()" [disabled]="loading" class="fuse-mat-button-large dark mt-6 md:w-72 sm:w-full"
+    <button (click)="changePassword()" [disabled]="loading" class="fuse-mat-button-large dark dark:bg-[#1E293BDB] md:w-72 sm:w-full"
       mat-flat-button [color]="'primary'">
       <span *ngIf="!loading">Изменить</span>
       <mat-progress-spinner *ngIf="loading" [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>

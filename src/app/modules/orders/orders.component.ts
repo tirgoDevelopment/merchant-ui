@@ -57,7 +57,7 @@ export class OrdersComponent implements OnInit {
   showFilter: boolean = false;
   isLoading: boolean = false;
   dataSource: any[];
-  displayedColumns: string[] = ['index', 'id', 'loadingLocation', 'deliveryLocation', 'cargoStatus', 'sendDate', 'offeredPrice', 'isSafe', 'type_cargo', 'transport_type'];
+  displayedColumns: string[] = ['index', 'id', 'loadingLocation','deliveryLocation','cargoStatus','sendDate','offeredPrice','isSafe','type_cargo','transport_type']
   currentUser: any;
   filter = { userId: null, clientId: null, orderId: null, statusId: null, loadingLocation: null, deliveryLocation: null, transportKindId: null, transportTypeId: null, createAt: null, sendDate: null }
   private sseSubscription: Subscription;
@@ -99,7 +99,7 @@ export class OrdersComponent implements OnInit {
   getOrders(filter?: any, sortBy?: string, sortType?: string) {
     this.isLoading = true;
     const pagination = { size: this.size, currentPage: this.currentPage };
-  
+
     const request$ = of({ filter, sortBy, sortType }).pipe(
       switchMap(({ filter, sortBy, sortType }) => {
         const requestParams = { filter, sortBy, sortType };
@@ -109,10 +109,12 @@ export class OrdersComponent implements OnInit {
         );
       })
     );
-  
+
     request$.subscribe({
       next: ({ success, data, totalPagesCount }) => {
-        this.isLoading = false;
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 500)
         this.dataSource = success ? data : [];
         this.totalPagesCount = totalPagesCount;
         this.dataSource.forEach(v => {
@@ -127,7 +129,6 @@ export class OrdersComponent implements OnInit {
       }
     });
   }
-  
   getStatuses() {
     this.typesService.getStatuses().subscribe((res: any) => {
       if (res.success) {
@@ -150,6 +151,8 @@ export class OrdersComponent implements OnInit {
     });
   }
   showOrderDetails(order) {
+    console.log(order);
+    
     const dialogRef = this.dialog.open(OrderDetailComponent, {
       height: '100vh',
       autoFocus: false,

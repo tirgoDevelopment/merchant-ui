@@ -15,7 +15,7 @@ export class SseService {
   getUpdates(): Observable<any> {
     if(this.authService.accessToken) {
       const token = this.authService.accessToken;
-      this.eventSource = new EventSource(env.apiUrl + '/users/sse/events?token=' + token);
+      this.eventSource = new EventSource(env.apiUsers + '/users/sse/events?token=' + token);
   
       this.eventSource.onmessage = (event) => {
         const data = JSON.parse(event.data);

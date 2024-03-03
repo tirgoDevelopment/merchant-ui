@@ -12,7 +12,7 @@
         <ya-map [center]="[55.751952, 37.600739]" [zoom]="12">
         </ya-map>
       </div>
-      <div class="max-w-md mx-auto mt-3 bg-white rounded-lg shadow-md">
+      <div class="max-w-md mx-auto mt-3 rounded-lg shadow-md">
         <div class="grid grid-cols-2 gap-4">
           <div>
             <p class="text-lg mb-1">Откуда</p>
@@ -182,12 +182,12 @@
           <div>
             <p class="text-lg mb-1">Способ погрузки</p>
             <p class="font-bold">
-              {{data.loadingMethod ? 'data.loadingMethod' : 'Не указана'}}</p>
+              {{data.loadingMethod.name ? data.loadingMethod.name : 'Не указана'}}</p>
           </div>
           <div>
             <p class="text-lg mb-1">Упаковка</p>
             <p class="font-bold">
-              {{data.cargoPackage ? 'data.cargoPackage' : 'Не указана'}}</p>
+              {{data.cargoPackage.name ? data.cargoPackage.name : 'Не указана'}}</p>
           </div>
         </div>
       </div>

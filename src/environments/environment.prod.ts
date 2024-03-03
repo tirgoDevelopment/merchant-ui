@@ -1,4 +1,4 @@
 export const env = {
     production: true,
-    apiUrl: 'http://65.1.134.189/api/v2'
+    apiUrl: 'https://test-merchant.tirgo.io/api/v2'
   };
