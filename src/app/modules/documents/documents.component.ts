@@ -28,6 +28,7 @@ import { PipesModule } from 'app/shared/pipes/pipes.module';
 })
 export class DocumentsComponent implements OnInit {
   currentMerchant: any;
+  isLoading:boolean = false;
   constructor(
     private authService: AuthService,
     private documentService: DocumentsService
@@ -37,9 +38,13 @@ export class DocumentsComponent implements OnInit {
   }
 
   getMerchant() {
+    this.isLoading = true;
     let curUser: any = jwtDecode(this.authService.accessToken);
     this.authService.getMerchantById(curUser.merchantId).subscribe((res: any) => {
       if (res.success) {
+        setTimeout(() => {
+          this.isLoading = false;
+        },500)
         this.currentMerchant = res.data;
       }
     })

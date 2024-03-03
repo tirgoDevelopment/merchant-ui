@@ -10,7 +10,7 @@ export class FinanceService {
   ) { }
   
   getAll(user,pag, filter?,sortBy?,sortType? ) {
-    let url = `${env.apiUrl}/finance/transaction/merchant-transactions?userId=${user}&pageSize=${pag.size}&pageIndex=${pag.currentPage}`;
+    let url = `${env.apiFinance}/finance/transaction/merchant-transactions?userId=${user}&pageSize=${pag.size}&pageIndex=${pag.currentPage}`;
     if (filter) {
       url += `&${filter}`;
     }
@@ -20,9 +20,9 @@ export class FinanceService {
     return this.http.get(url);
   }
   create(data) {
-    return this.http.post(env.apiUrl+'/finance/transaction',data);
+    return this.http.post(env.apiFinance+'/finance/transaction',data);
   }
   getBalance(id) {
-    return this.http.get(env.apiUrl+'/finance/transaction/merchant-balance?merchantId='+id);
+    return this.http.get(env.apiFinance+'/finance/transaction/merchant-balance?merchantId='+id);
   }
 }

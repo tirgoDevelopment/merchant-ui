@@ -11,7 +11,7 @@ export class DocumentsService {
   ) { }
 
   getFile(fileName: string): Observable<string> {
-    return this.http.get(env.apiUrl+ `/references/files/client_merchant/${fileName}`, { responseType: 'blob' })
+    return this.http.get(env.apiReferences+ `/references/files/client_merchant/${fileName}`, { responseType: 'blob' })
       .pipe(
         map((blob: Blob) => {
           return URL.createObjectURL(blob);

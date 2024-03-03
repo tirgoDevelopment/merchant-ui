@@ -24,6 +24,7 @@ import { Subscription } from 'rxjs';
 import { PipesModule } from 'app/shared/pipes/pipes.module';
 import { PaginationComponent } from 'app/shared/components/pagination/pagination.component';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-finance',
@@ -31,7 +32,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   styleUrls: ['./finance.component.scss'],
   encapsulation: ViewEncapsulation.None,
   standalone: true,
-  imports: [PaginationComponent, ReactiveFormsModule,MatDatepickerModule, MatSelectModule, PipesModule, FormsModule, MatInputModule, MatDatepickerModule, MatProgressSpinnerModule, DatePipe, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
+  imports: [PaginationComponent, ReactiveFormsModule, MatDatepickerModule, MatSelectModule, PipesModule, FormsModule, MatInputModule, MatDatepickerModule, MatProgressSpinnerModule, DatePipe, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
   animations: [
     trigger('showHideFilter', [
       state('show', style({
@@ -77,7 +78,8 @@ export class FinanceComponent implements OnInit {
     private financeService: FinanceService,
     private dialog: MatDialog,
     private sseService: SseService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private toastr: ToastrService
   ) { }
   ngOnChanges() {
     this.ref.detectChanges();
@@ -109,7 +111,7 @@ export class FinanceComponent implements OnInit {
     let pagination = { size: this.size, currentPage: this.currentPage };
     this.isLoading = true;
     let request;
-    
+
     if (sortBy !== null && sortType !== null) {
       if (filter !== null) {
         request = this.financeService.getAll(this.currentUser.userId, pagination, filter, sortBy, sortType);
@@ -122,7 +124,9 @@ export class FinanceComponent implements OnInit {
 
     request.subscribe((res: any) => {
       if (res && res.success) {
-        this.isLoading = false;
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 500)
         this.dataSource = res.data;
         this.totalPagesCount = res.totalPagesCount;
         this.dataSource.forEach((v) => {
@@ -131,9 +135,16 @@ export class FinanceComponent implements OnInit {
           }
         });
       } else {
-        this.isLoading = false;
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 500)
         this.dataSource = [];
       }
+    }, error => {
+      setTimeout(() => {
+        this.isLoading = false;
+        this.toastr.error(error.error.message);
+      }, 500)
     });
   }
   createModal(type) {
@@ -163,7 +174,7 @@ export class FinanceComponent implements OnInit {
   }
   applyFilter() {
     console.log(this.filter);
-    
+
     if (this.filter) {
       this.filterPath = this.generateFilterPath(this.filter);
       this.getAllTransaction(this.filterPath, this.sortColumn, this.sortDirection);
