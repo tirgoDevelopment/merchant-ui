@@ -114,7 +114,7 @@
             <mat-icon>{{ getSortIcon('created_at') }}</mat-icon>
           </div>
         </th>
-        <td mat-cell *matCellDef="let row">{{row.created_at | date: 'dd.MM.YYYY' }}</td>
+        <td mat-cell *matCellDef="let row">{{row.createdAt | date: 'dd.MM.YYYY' }}</td>
       </ng-container>
 
       <ng-container matColumnDef="amount">
@@ -155,7 +155,10 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;let i=index" (click)="showOrderDetails(row)" class="cursor-pointer" [ngClass]="{'odd:bg-[#EFEFEF] dark:odd:bg-[#1E293BDB]': row, 'even:bg-white dark:even:bg-[#1E293BDB]': row}"></tr>
     </table>
-    <app-pagination [totalPagesCount]="totalPagesCount" [size]="size" [currentPage]="currentPage"
+    <div class="flex justify-center p-5 font-bold text-lg text-slate-600 " *ngIf="!dataSource?.length">
+      Данные отсутствуют в таблице
+    </div>
+    <app-pagination [totalPagesCount]="totalPagesCount" *ngIf="dataSource?.length" [size]="size" [currentPage]="currentPage"
       (paginationEvent)="onPaginationEvent($event)">
     </app-pagination>
   </div>
