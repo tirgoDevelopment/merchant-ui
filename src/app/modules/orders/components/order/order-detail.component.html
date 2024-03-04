@@ -99,7 +99,7 @@
           </div>
           <div>
             <p class="text-lg mb-1">Заказ назначен на</p>
-            <p class="font-bold">{{data.sendDate | dateFormat }}</p>
+            <p class="font-bold">{{data.sendDate | dateFormat:false }}</p>
           </div>
           <div>
             <p class="text-lg mb-1">Статус</p>
@@ -197,7 +197,7 @@
   </mat-tab>
   <mat-tab label="Предложения" *ngIf="data.driverOffers.length">
     <div
-      class="max-w-sm p-4 my-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+      class="max-w-sm p-4 my-4  border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
       *ngFor="let offer of data.driverOffers">
       <div class="grid grid-cols-2 gap-4">
         <div class="mb-2">

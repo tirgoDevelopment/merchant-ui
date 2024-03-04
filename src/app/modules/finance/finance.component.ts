@@ -173,18 +173,15 @@ export class FinanceComponent implements OnInit {
     return url.length > 0 ? url.substr(1) : url;
   }
   applyFilter() {
-    console.log(this.filter);
-
     if (this.filter) {
       this.filterPath = this.generateFilterPath(this.filter);
       this.getAllTransaction(this.filterPath, this.sortColumn, this.sortDirection);
     }
   }
   resetSearch() {
-    if (this.filter) {
       this.filter = { fromDate: null, toDate: null, transactionType: null };
-      this.getAllTransaction(this.filterPath, this.sortColumn, this.sortDirection);
-    }
+      this.applyFilter();
+      // this.getAllTransaction(this.filterPath, this.sortColumn, this.sortDirection);
   }
   sortData(filter: string): void {
     const currentSortOption = this.sortOptions[filter];
