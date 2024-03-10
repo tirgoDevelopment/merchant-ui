@@ -151,8 +151,6 @@ export class OrdersComponent implements OnInit {
     });
   }
   showOrderDetails(order) {
-    console.log(order);
-    
     const dialogRef = this.dialog.open(OrderDetailComponent, {
       height: '100vh',
       autoFocus: false,
