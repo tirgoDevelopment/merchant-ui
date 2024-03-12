@@ -103,7 +103,7 @@ export class OrderDetailComponent implements OnInit {
   }
   saveEditedOffer(offer) {
     if (this.originalAmount == this.editedAmount) {
-      this.toastr.error('Предложение о сумме не редактировалось')
+      this.toastr.warning('Предложение о сумме не редактировалось')
     }
     else {
       let data = {
