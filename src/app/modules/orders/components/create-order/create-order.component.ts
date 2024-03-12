@@ -1,7 +1,7 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -52,6 +52,12 @@ export class CreateOrderComponent implements OnInit {
   isRefrigeratorMode: boolean = false;
   isCistern: any;
   isContainer: any;
+
+  fields = [
+    { formControlName: 'loadingLocation', label: 'Место отправки груза', cityList: [] },
+    { formControlName: 'deliveryLocation', label: 'Место доставки груза', cityList: [] },
+    // Add more fields here as needed
+  ];
 
   constructor(
     private dialogRef: MatDialogRef<CreateOrderComponent>,
@@ -136,16 +142,25 @@ export class CreateOrderComponent implements OnInit {
     return date && date >= currentDate;
   };
   createOrder() {
-    // this.form.disable();
-    console.log(this.form.value);
-    
+    this.form.patchValue({
+      loadingLocation: {
+        name: this.form.value.loadingLocation.displayName,
+        latitude: this.form.value.loadingLocation.longitude,
+        longitude: this.form.value.loadingLocation.longitude,
+      },
+      deliveryLocation: {
+        name: this.form.value.deliveryLocation.displayName,
+        latitude: this.form.value.deliveryLocation.longitude,
+        longitude: this.form.value.deliveryLocation.longitude,
+      }
+    });
     this.orderService.createOrder(this.form.value).subscribe((res: any) => {
       if (res.success) {
         this.form.enable();
         this.toastr.success('Заказ успешно создан');
         this.closeModal();
       }
-    },error => {
+    }, error => {
       this.form.enable();
       this.toastr.error(error.error.message);
     })
@@ -212,21 +227,14 @@ export class CreateOrderComponent implements OnInit {
       this.isContainer = values.includes('Контейнеровоз');
     });
   }
-  findCity(ev: any) {
-    // try {
-    //   const findText = ev.target.value.toString().trim().toLowerCase();
-    //   if (findText.length >= 2) {
-    //     this.viewText = true;
-    //     this.countryService.findCity(findText).subscribe((res: any) => {
-    //       this.findList = res;
-    //     })
-    //   } else {
-    //     this.viewText = false;
-    //     this.findList = [];
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching city data:", error);
-    // }
+  findCity(ev: any, field: string) {
+    const findText = ev.target.value.toString().trim().toLowerCase();
+    this.typesService.getCities(findText, 'ru').subscribe((res: any) => {
+      this.findList = res.data;
+    });
+  }
+  displayFn(city: any): string {
+    return city ? city.displayName : '';
   }
   closeModal() {
     this.dialogRef.close();

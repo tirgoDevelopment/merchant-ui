@@ -9,18 +9,20 @@
   <mat-tab label="Информация">
     <mat-dialog-content class="h-full">
       <div class="h-60 w-full mt-4">
-        <ya-map [center]="[55.751952, 37.600739]" [zoom]="12">
+        <ya-map [center]="[data.loadingLocation.latitude, data.loadingLocation.longitude]" [zoom]="12">
+          <ya-multiroute [referencePoints]="[[data.loadingLocation.latitude, data.loadingLocation.longitude], [data.deliveryLocation.latitude, data.deliveryLocation.longitude]]">
+          </ya-multiroute>
         </ya-map>
       </div>
       <div class="max-w-md mx-auto mt-3 rounded-lg shadow-md">
         <div class="grid grid-cols-2 gap-4">
           <div>
             <p class="text-lg mb-1">Откуда</p>
-            <p class="font-bold">{{data.loadingLocation}}</p>
+            <p class="font-bold">{{data.loadingLocation.name}}</p>
           </div>
           <div>
             <p class="text-lg mb-1">Куда</p>
-            <p class="font-bold">{{data.deliveryLocation}}</p>
+            <p class="font-bold">{{data.deliveryLocation.name}}</p>
           </div>
           
           <div *ngIf="data.customsPlaceLocation">
@@ -182,12 +184,12 @@
           <div>
             <p class="text-lg mb-1">Способ погрузки</p>
             <p class="font-bold">
-              {{data.loadingMethod.name ? data.loadingMethod.name : 'Не указана'}}</p>
+              {{data.loadingMethod?.name ? data.loadingMethod?.name : 'Не указана'}}</p>
           </div>
           <div>
             <p class="text-lg mb-1">Упаковка</p>
             <p class="font-bold">
-              {{data.cargoPackage.name ? data.cargoPackage.name : 'Не указана'}}</p>
+              {{data.cargoPackage?.name ? data.cargoPackage?.name : 'Не указана'}}</p>
           </div>
         </div>
       </div>
