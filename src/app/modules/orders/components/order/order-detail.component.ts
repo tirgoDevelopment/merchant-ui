@@ -37,7 +37,7 @@ export class OrderDetailComponent implements OnInit {
   editedAmount: number;
   originalCurrencyId: string;
   editedCurrencyId: string;
-
+  
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private sseService: SseService,
@@ -77,6 +77,7 @@ export class OrderDetailComponent implements OnInit {
       const dialogRef = this.dialog.open(ScoreComponent, {
         autoFocus: false,
         disableClose: true,
+        data: this.data
       });
       dialogRef.afterClosed().subscribe(result => { });
     }
