@@ -145,14 +145,34 @@ export class CreateOrderComponent implements OnInit {
     this.form.patchValue({
       loadingLocation: {
         name: this.form.value.loadingLocation.displayName,
-        latitude: this.form.value.loadingLocation.longitude,
+        latitude: this.form.value.loadingLocation.latitude,
         longitude: this.form.value.loadingLocation.longitude,
       },
       deliveryLocation: {
         name: this.form.value.deliveryLocation.displayName,
-        latitude: this.form.value.deliveryLocation.longitude,
+        latitude: this.form.value.deliveryLocation.latitude,
         longitude: this.form.value.deliveryLocation.longitude,
-      }
+      },
+      customsPlaceLocation: {
+        name: this.form.value.customsPlaceLocation.displayName,
+        latitude: this.form.value.customsPlaceLocation.latitude,
+        longitude: this.form.value.customsPlaceLocation.longitude,
+      },
+      customsClearancePlaceLocation: {
+        name: this.form.value.customsClearancePlaceLocation.displayName,
+        latitude: this.form.value.customsClearancePlaceLocation.latitude,
+        longitude: this.form.value.customsClearancePlaceLocation.longitude,
+      },
+      additionalLoadingLocation: {
+        name: this.form.value.additionalLoadingLocation.displayName,
+        latitude: this.form.value.additionalLoadingLocation.latitude,
+        longitude: this.form.value.additionalLoadingLocation.longitude,
+      },
+      additionalDeliveryLocation: {
+        name: this.form.value.additionalDeliveryLocation.displayName,
+        latitude: this.form.value.additionalDeliveryLocation.latitude,
+        longitude: this.form.value.additionalDeliveryLocation.longitude,
+      },
     });
     this.orderService.createOrder(this.form.value).subscribe((res: any) => {
       if (res.success) {
@@ -238,6 +258,7 @@ export class CreateOrderComponent implements OnInit {
   }
   closeModal() {
     this.dialogRef.close();
+    this.dialog.closeAll();
   }
   agreementModal() {
     const dialogRef: MatDialogRef<AgreementComponent> = this.dialog.open(AgreementComponent, {
