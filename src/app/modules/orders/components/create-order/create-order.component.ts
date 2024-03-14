@@ -53,12 +53,6 @@ export class CreateOrderComponent implements OnInit {
   isCistern: any;
   isContainer: any;
 
-  fields = [
-    { formControlName: 'loadingLocation', label: 'Место отправки груза', cityList: [] },
-    { formControlName: 'deliveryLocation', label: 'Место доставки груза', cityList: [] },
-    // Add more fields here as needed
-  ];
-
   constructor(
     private dialogRef: MatDialogRef<CreateOrderComponent>,
     private formBuilder: FormBuilder,
@@ -142,6 +136,18 @@ export class CreateOrderComponent implements OnInit {
     return date && date >= currentDate;
   };
   createOrder() {
+    const optionalFields = ['customsPlaceLocation', 'customsClearancePlaceLocation', 'additionalLoadingLocation', 'additionalDeliveryLocation'];
+    for (const field of optionalFields) {
+      if (this.form.value[field]) {
+        this.form.patchValue({
+          [field]: {
+            name: this.form.value[field].displayName,
+            latitude: this.form.value[field].latitude,
+            longitude: this.form.value[field].longitude,
+          },
+        });
+      }
+    }
     this.form.patchValue({
       loadingLocation: {
         name: this.form.value.loadingLocation.displayName,
@@ -152,27 +158,7 @@ export class CreateOrderComponent implements OnInit {
         name: this.form.value.deliveryLocation.displayName,
         latitude: this.form.value.deliveryLocation.latitude,
         longitude: this.form.value.deliveryLocation.longitude,
-      },
-      customsPlaceLocation: {
-        name: this.form.value.customsPlaceLocation.displayName,
-        latitude: this.form.value.customsPlaceLocation.latitude,
-        longitude: this.form.value.customsPlaceLocation.longitude,
-      },
-      customsClearancePlaceLocation: {
-        name: this.form.value.customsClearancePlaceLocation.displayName,
-        latitude: this.form.value.customsClearancePlaceLocation.latitude,
-        longitude: this.form.value.customsClearancePlaceLocation.longitude,
-      },
-      additionalLoadingLocation: {
-        name: this.form.value.additionalLoadingLocation.displayName,
-        latitude: this.form.value.additionalLoadingLocation.latitude,
-        longitude: this.form.value.additionalLoadingLocation.longitude,
-      },
-      additionalDeliveryLocation: {
-        name: this.form.value.additionalDeliveryLocation.displayName,
-        latitude: this.form.value.additionalDeliveryLocation.latitude,
-        longitude: this.form.value.additionalDeliveryLocation.longitude,
-      },
+      }
     });
     this.orderService.createOrder(this.form.value).subscribe((res: any) => {
       if (res.success) {
@@ -224,16 +210,16 @@ export class CreateOrderComponent implements OnInit {
     }
   }
   changeValue() {
-    this.form.get('isUrgent').valueChanges.subscribe((value) => {
-      if (value) {
-        this.form.get('isTwoDays').setValue(false);
-      }
-    });
-    this.form.get('isTwoDays').valueChanges.subscribe((value) => {
-      if (value) {
-        this.form.get('isUrgent').setValue(false);
-      }
-    });
+    // this.form.get('isUrgent').valueChanges.subscribe((value) => {
+    //   if (value) {
+    //     this.form.get('isTwoDays').setValue(false);
+    //   }
+    // });
+    // this.form.get('isTwoDays').valueChanges.subscribe((value) => {
+    //   if (value) {
+    //     this.form.get('isUrgent').setValue(false);
+    //   }
+    // });
     this.form.get('isSafeTransaction').valueChanges.subscribe((value) => {
       if (value) {
         this.agreementModal();
@@ -261,16 +247,18 @@ export class CreateOrderComponent implements OnInit {
     this.dialog.closeAll();
   }
   agreementModal() {
-    const dialogRef: MatDialogRef<AgreementComponent> = this.dialog.open(AgreementComponent, {
-      autoFocus: false,
-      disableClose: true,
-      width: '600px'
-    });
-    dialogRef.afterClosed().subscribe((res: any) => {
-      if (res === 'close') {
-        this.form.get('isSafeTransaction')?.setValue(false);
-      }
-    });
+    if (!this.form.value.isSafeTransaction) {
+      const dialogRef: MatDialogRef<AgreementComponent> = this.dialog.open(AgreementComponent, {
+        autoFocus: false,
+        disableClose: true,
+        width: '600px'
+      });
+      dialogRef.afterClosed().subscribe((res: any) => {
+        if (res === 'close') {
+          this.form.get('isSafeTransaction')?.setValue(false);
+        }
+      });
+    }
   }
   getDynamicLabel(location: string): string {
     switch (location) {
