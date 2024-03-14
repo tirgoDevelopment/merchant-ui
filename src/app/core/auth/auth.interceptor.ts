@@ -16,8 +16,7 @@ export const authInterceptor = (req: HttpRequest<unknown>, next: HttpHandlerFn):
 
     return next(newReq).pipe(
         catchError((error) => {
-
-            if (error instanceof HttpErrorResponse && error.status === 401) {
+            if (error instanceof HttpErrorResponse && error.status === 401 || error.error.message == 'tokenExpired') {
                
                 authService.signOut();
 

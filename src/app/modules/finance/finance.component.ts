@@ -57,7 +57,7 @@ export class FinanceComponent implements OnInit {
 
   isLoading: boolean = false;
   dataSource: any;
-  displayedColumns: string[] = ['index', 'id', 'status', 'createdBy', 'type', 'amount', 'created_at', "comment"];
+  displayedColumns: string[] = ['index', 'id', 'status', 'type', 'amount', 'created_at', "comment"];
   currentUser: any = { activeBalance: '', frozenbalance: '' };
   balances: any;
   filter = { fromDate: null, toDate: null, transactionType: null }
@@ -67,7 +67,6 @@ export class FinanceComponent implements OnInit {
   sortOptions: { [key: string]: { column: string, direction: string } } = {
     id: { column: 'id', direction: null },
     transctionType: { column: 'transctionType', direction: null },
-    createdBy: { column: 'createdBy', direction: null },
     created_at: { column: 'created_at', direction: null },
     amount: { column: 'amount', direction: null },
     comment: { column: 'comment', direction: null },

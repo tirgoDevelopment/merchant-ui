@@ -87,7 +87,7 @@ export class OrdersComponent implements OnInit {
     this.getStatuses();
     this.sseSubscription = this.sseService.getUpdates().subscribe(
       (data) => {
-        if (data.type == 'driverAcceptOffer' || data.type == 'driverOffer' || data.type == 'driverOffer') {
+        if (data.type == 'driverAcceptOffer' || data.type == 'driverOffer') {
           this.getOrders();
         }
       },

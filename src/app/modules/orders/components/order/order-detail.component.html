@@ -79,8 +79,15 @@
             <p class="font-bold">
               {{ data.cargoWeight ? data.cargoWeight + 'кг' : 'Не указана' }}
             </p>
-
           </div>
+
+          <div>
+            <p class="text-lg mb-1">Кубатура</p>
+            <p class="font-bold">
+              {{ data.cubature ? data.cubature : 'Не указана' }} <span *ngIf="data.cubature">m<sup>3</sup> </span>
+            </p>
+          </div>
+
           <div>
             <p class="text-lg mb-1">Стоимость</p>
             <p class="font-bold">
