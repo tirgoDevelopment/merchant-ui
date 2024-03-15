@@ -26,7 +26,7 @@ import { TypesService } from 'app/shared/services/types.service';
   styleUrls: ['./order-detail.component.scss'],
   encapsulation: ViewEncapsulation.Emulated,
   standalone: true,
-  imports: [MatIconModule,DatePipe, MatTabsModule, NgIf, PipesModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule, ReactiveFormsModule, AngularYandexMapsModule, MatDialogModule, TranslocoModule, FuseDrawerComponent, MatButtonModule, NgFor, NgClass, MatTooltipModule],
+  imports: [MatIconModule, DatePipe, MatTabsModule, NgIf, PipesModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule, ReactiveFormsModule, AngularYandexMapsModule, MatDialogModule, TranslocoModule, FuseDrawerComponent, MatButtonModule, NgFor, NgClass, MatTooltipModule],
 })
 export class OrderDetailComponent implements OnInit {
   private sseSubscription: Subscription;
@@ -37,7 +37,7 @@ export class OrderDetailComponent implements OnInit {
   editedAmount: number;
   originalCurrencyId: string;
   editedCurrencyId: string;
-  
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private sseService: SseService,
@@ -77,20 +77,28 @@ export class OrderDetailComponent implements OnInit {
       const dialogRef = this.dialog.open(ScoreComponent, {
         autoFocus: false,
         disableClose: true,
-        data: this.data
+        data: offer
       });
-      dialogRef.afterClosed().subscribe(result => { });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result == 'confirm') {
+          this.processOffer(offer.id);
+        }
+      });
     }
     else {
-      this.orderService.acceptOffer(offer.id).subscribe((res: any) => {
-        if (res.success) {
-          this.toastr.success('Success')
-        }
-      }, error => {
-        this.toastr.error(error.error.message)
-      })
+      this.processOffer(offer.id);
       this.dialog.closeAll();
     }
+  }
+  processOffer(offerId) {
+    this.orderService.acceptOffer(offerId).subscribe((res: any) => {
+      if (res.success) {
+        this.toastr.success('Success');
+        this.dialog.closeAll();
+      }
+    }, error => {
+      this.toastr.error(error.error.message);
+    });
   }
   editOffer(offer) {
     this.editing = true;

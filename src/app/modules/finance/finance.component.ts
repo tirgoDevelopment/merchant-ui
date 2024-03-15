@@ -87,6 +87,8 @@ export class FinanceComponent implements OnInit {
     this.currentUser = jwtDecode(localStorage.getItem('merchant'));
     this.sseSubscription = this.sseService.getUpdates().subscribe(
       (data) => {
+        console.log(data);
+        
         if (data.type == 'transactionVerified' || data.type == 'transactionRejected') {
           this.getAllTransaction();
           this.getBalance();
@@ -205,3 +207,7 @@ export class FinanceComponent implements OnInit {
     return 'unfold_more';
   }
 }
+
+
+
+// sdf@asd.com
