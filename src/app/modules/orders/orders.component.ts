@@ -75,6 +75,7 @@ export class OrdersComponent implements OnInit {
     offeredPrice: { column: 'offeredPrice', direction: null },
     isSafe: { column: 'isSafe', direction: null },
   };
+
   constructor(
     private orderService: OrdersService,
     private authService: AuthService,
@@ -217,5 +218,5 @@ export class OrdersComponent implements OnInit {
     }
     return 'unfold_more';
   }
-
+ 
 }
