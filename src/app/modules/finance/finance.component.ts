@@ -55,6 +55,7 @@ export class FinanceComponent implements OnInit {
   currentPage: number = 1;
   showFilter: boolean = false;
 
+
   isLoading: boolean = false;
   dataSource: any;
   displayedColumns: string[] = ['index', 'id', 'status', 'type', 'amount', 'created_at', "comment"];
@@ -87,8 +88,6 @@ export class FinanceComponent implements OnInit {
     this.currentUser = jwtDecode(localStorage.getItem('merchant'));
     this.sseSubscription = this.sseService.getUpdates().subscribe(
       (data) => {
-        console.log(data);
-        
         if (data.type == 'transactionVerified' || data.type == 'transactionRejected') {
           this.getAllTransaction();
           this.getBalance();
@@ -207,7 +206,3 @@ export class FinanceComponent implements OnInit {
     return 'unfold_more';
   }
 }
-
-
-
-// sdf@asd.com

@@ -127,6 +127,26 @@ export class Step2Component implements OnInit {
       this.signUpForm.enable();
       this.toastr.error('Требуется указать Юридический адрес');
     }
+    else if (this.signUpForm.value.logoFilePath === '') {
+      this.signUpForm.enable();
+      this.toastr.error('Требуется указать логотип');
+    }
+    else if (this.signUpForm.value.logoFilePath === '') {
+      this.signUpForm.enable();
+      this.toastr.error('Требуется указать логотип');
+    }
+    else if (this.signUpForm.value.passportFilePath === '') {
+      this.signUpForm.enable();
+      this.toastr.error('Требуется указать Паспорт руководителя');
+    }
+    else if (this.signUpForm.value.registrationCertificateFilePath === '') {
+      this.signUpForm.enable();
+      this.toastr.error('Требуется указать Регистрация сертификата');
+    }
+    else if (this.signUpForm.value.transportationCertificateFilePath === '') {
+      this.signUpForm.enable();
+      this.toastr.error('Требуется указать Лицензия для перевозки груза');
+    }
     else {
       this.formData.append('merchantId', this.currentUser.merchantId)
       this.formData.append('supervisorFirstName', this.signUpForm.value.supervisorFirstName)

@@ -27,7 +27,7 @@ import { Subject, takeUntil } from 'rxjs';
     imports: [FuseLoadingBarComponent, FuseVerticalNavigationComponent, MatButtonModule, MatIconModule, LanguagesComponent, FuseFullscreenComponent, SearchComponent, MessagesComponent, NotificationsComponent, UserComponent, NgIf, RouterOutlet],
 })
 export class DenseLayoutComponent implements OnInit, OnDestroy {
-    @Input('isAthenticated')isAthenticated:boolean
+    @Input('isAthenticated') isAthenticated: boolean
     isScreenSmall: boolean;
     navigation: Navigation;
     navigationAppearance: 'default' | 'dense' = 'dense';
@@ -67,8 +67,7 @@ export class DenseLayoutComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        // const scheme:any = localStorage.getItem('merchantMode');
-        // this.setScheme(scheme);
+        
         // Subscribe to navigation data
         this._navigationService.navigation$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -83,7 +82,7 @@ export class DenseLayoutComponent implements OnInit, OnDestroy {
                 this.config = config;
             });
 
-      
+
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -137,7 +136,7 @@ export class DenseLayoutComponent implements OnInit, OnDestroy {
     }
 
     signOut(): void {
-        this._authService.signOut().subscribe(()=>{})
+        this._authService.signOut().subscribe(() => { })
         this._router.navigate(['/sign-out']);
     }
 }
