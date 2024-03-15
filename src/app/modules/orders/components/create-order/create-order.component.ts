@@ -1,6 +1,6 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -13,14 +13,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent } from '@fuse/components/alert';
-import { CountryService } from 'app/shared/services/country.service';
+import { debounceTime, distinctUntilChanged, switchMap, catchError, tap } from 'rxjs/operators';
 import { NgxMatIntlTelInputComponent } from 'ngx-mat-intl-tel-input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ToastrService } from 'ngx-toastr';
 import { AgreementComponent } from '../agreement/agreement.component';
 import { TypesService } from 'app/shared/services/types.service';
 import { OrdersService } from '../../services/orders.service';
-import { forkJoin } from 'rxjs';
+import { Observable, Subject, forkJoin, of } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { AuthService } from 'app/core/auth/auth.service';
 
@@ -34,6 +34,7 @@ import { AuthService } from 'app/core/auth/auth.service';
   imports: [RouterLink, NgIf, NgFor, MatDatepickerModule, MatSelectModule, MatAutocompleteModule, MatDialogModule, FuseAlertComponent, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatProgressSpinnerModule, NgxMatIntlTelInputComponent],
 })
 export class CreateOrderComponent implements OnInit {
+  loadingLocationControl = new FormControl();
   form: FormGroup;
   loading: boolean = false;
   findList: any[] | undefined = [];
@@ -53,6 +54,8 @@ export class CreateOrderComponent implements OnInit {
   isCistern: any;
   isContainer: any;
 
+  private searchSubject = new Subject<string>();
+
   constructor(
     private dialogRef: MatDialogRef<CreateOrderComponent>,
     private formBuilder: FormBuilder,
@@ -61,7 +64,23 @@ export class CreateOrderComponent implements OnInit {
     private authService: AuthService,
     private toastr: ToastrService,
     private dialog: MatDialog
-  ) { }
+  ) { 
+    this.searchSubject
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        tap(() => this.loading = true),
+        switchMap((findText: string) => {
+          return this.findCities(findText.trim().toLowerCase()).pipe(
+            catchError(() => of([])),
+            tap(() => this.loading = false)
+          );
+        })
+      )
+      .subscribe((res: any) => {
+        this.findList = res.data;
+      });
+  }
 
   ngOnInit() {
     this.currentUser = jwtDecode(this.authService.accessToken)
@@ -210,34 +229,28 @@ export class CreateOrderComponent implements OnInit {
     }
   }
   changeValue() {
-    // this.form.get('isUrgent').valueChanges.subscribe((value) => {
-    //   if (value) {
-    //     this.form.get('isTwoDays').setValue(false);
-    //   }
-    // });
-    // this.form.get('isTwoDays').valueChanges.subscribe((value) => {
-    //   if (value) {
-    //     this.form.get('isUrgent').setValue(false);
-    //   }
-    // });
     this.form.get('isSafeTransaction').valueChanges.subscribe((value) => {
       if (value) {
         this.agreementModal();
       }
     });
-
     this.form.get('transportKindIds').valueChanges.subscribe((values) => {
-      this.isAutotransport = values.includes('Автовоз');
-      this.isRefrigerator = values.includes('Рефрежатор');
-      this.isCistern = values.includes('Цистерна');
-      this.isContainer = values.includes('Контейнеровоз');
+      // this.isAutotransport = values.includes('Автовоз');
+      // this.isRefrigerator = values.includes('Рефрежатор');
+      // this.isCistern = values.includes('Цистерна');
+      // this.isContainer = values.includes('Контейнеровоз');
     });
   }
-  findCity(ev: any, field: string) {
+  findCity(ev: any): void {
     const findText = ev.target.value.toString().trim().toLowerCase();
-    this.typesService.getCities(findText, 'ru').subscribe((res: any) => {
-      this.findList = res.data;
-    });
+    this.searchSubject.next(findText);
+  }
+  findCities(findText: string): Observable<any> {
+    if (!findText) {
+      return of({ data: [] });
+    } else {
+      return this.typesService.getCities(findText, 'ru');
+    }
   }
   displayFn(city: any): string {
     return city ? city.displayName : '';

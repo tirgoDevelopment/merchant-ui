@@ -67,6 +67,8 @@ export class DenseLayoutComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
+        // const scheme:any = localStorage.getItem('merchantMode');
+        // this.setScheme(scheme);
         // Subscribe to navigation data
         this._navigationService.navigation$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -123,6 +125,7 @@ export class DenseLayoutComponent implements OnInit, OnDestroy {
     }
 
     setScheme(scheme: Scheme): void {
+        // localStorage.setItem('merchantMode', scheme);
         this._fuseConfigService.config = { scheme };
     }
 
@@ -134,9 +137,7 @@ export class DenseLayoutComponent implements OnInit, OnDestroy {
     }
 
     signOut(): void {
-        this._authService.signOut().subscribe(()=>{
-            
-        })
+        this._authService.signOut().subscribe(()=>{})
         this._router.navigate(['/sign-out']);
     }
 }

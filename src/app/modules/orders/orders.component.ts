@@ -25,6 +25,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { TypesService } from 'app/shared/services/types.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CdkTableModule } from '@angular/cdk/table';
 
 @Component({
   selector: 'app-orders',
@@ -32,7 +34,7 @@ import { TypesService } from 'app/shared/services/types.service';
   styleUrls: ['./orders.component.scss'],
   encapsulation: ViewEncapsulation.None,
   standalone: true,
-  imports: [PaginationComponent, MatInputModule, MatSelectModule, ReactiveFormsModule, FormsModule, DatePipe, MatProgressSpinnerModule, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
+  imports: [PaginationComponent,MatTooltipModule,MatInputModule, MatSelectModule, ReactiveFormsModule, FormsModule, DatePipe, MatProgressSpinnerModule, MatPaginatorModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
   animations: [
     trigger('showHideFilter', [
       state('show', style({
@@ -51,7 +53,7 @@ import { TypesService } from 'app/shared/services/types.service';
 })
 export class OrdersComponent implements OnInit {
   statuses: any;
-  totalPagesCount: number = 1;
+  totalPagesCount: number;
   size: number = 5;
   currentPage: number = 1;
   showFilter: boolean = false;

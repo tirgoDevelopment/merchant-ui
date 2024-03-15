@@ -7,30 +7,30 @@
 
 
 <mat-dialog-content class="mt-5">
-  <div class="flex justify-between mb-2">
-    <span class="flex-1 font-bold">Услуга "Безопасная сделка"</span>
-    <span class="flex-none">$100</span>
+  <div class="flex justify-between gap-4 mb-2">
+    <span class="flex-1 font-bold">Услуга "Безопасная сделка": </span>
+    <span class="flex-none">{{serviceSafe | numberFormat}} сум</span>
   </div>
-  <div class="flex justify-between mb-2">
-    <span class="flex-1 font-bold">Налог</span>
-    <span class="flex-none">$180</span>
+  <div class="flex justify-between gap-4 mb-2">
+    <span class="flex-1 font-bold">Налог:</span>
+    <span class="flex-none">{{returnTax() | numberFormat}} сум</span>
   </div>
-  <div class="flex justify-between mb-2">
-    <span class="flex-1 font-bold">Водителю</span>
-    <span class="flex-none">$1320</span>
+  <div class="flex justify-between gap-4 mb-2">
+    <span class="flex-1 font-bold">Водителю:</span>
+    <span class="flex-none">{{data.amount | numberFormat}} сум</span>
   </div>
-  <div class="flex justify-between mb-2">
-    <span class="flex-1 font-bold">В итоге</span>
-    <span class="flex-none">$1600</span>
+  <div class="flex justify-between gap-4 mb-2">
+    <span class="flex-1 font-bold">В итоге:</span>
+    <span class="flex-none">{{returnAmount() | numberFormat}} сум</span>
   </div>
 </mat-dialog-content>
 <mat-dialog-actions align="center" class="flex mt-4 p-0">
-  <button [disabled]="loading" class="fuse-mat-button-sm dark " mat-stroked-button [color]="'primary'">
+  <button [disabled]="loading" (click)="close('cancel')" class="fuse-mat-button-sm dark " mat-stroked-button [color]="'primary'">
     <span *ngIf="!loading">Отменить</span>
     <mat-progress-spinner *ngIf="loading" [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
   </button>
 
-  <button [disabled]="loading" class="fuse-mat-button-sm dark " mat-flat-button [color]="'primary'">
+  <button [disabled]="loading" class="fuse-mat-button-sm dark " (click)="close('confirm')" mat-flat-button [color]="'primary'">
     <span *ngIf="!loading">Подтверждаю</span>
     <mat-progress-spinner *ngIf="loading" [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
   </button>
