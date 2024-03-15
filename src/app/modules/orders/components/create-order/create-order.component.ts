@@ -48,11 +48,11 @@ export class CreateOrderComponent implements OnInit {
   packagesTypes: any;
   cargoLoadingMethods: any;
 
-  isAutotransport: any;
-  isRefrigerator: any;
+  isAutotransport: boolean = false;
+  isRefrigerator: boolean = false;
   isRefrigeratorMode: boolean = false;
-  isCistern: any;
-  isContainer: any;
+  isCistern: boolean = false;
+  isContainer: boolean = false;
 
   private searchSubject = new Subject<string>();
 
