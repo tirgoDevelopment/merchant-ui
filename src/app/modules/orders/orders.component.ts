@@ -107,7 +107,7 @@ export class OrdersComponent implements OnInit {
       switchMap(({ filter, sortBy, sortType }) => {
         const requestParams = { filter, sortBy, sortType };
         return this.orderService.getOrdersByMerchant(this.currentUser.userId, pagination, filter, sortBy, sortType).pipe(
-          map((res: any) => ({ success: res.success, data: res.data, totalPagesCount: res.totalPagesCount })),
+          map((res: any) => ({ success: res.success, data: res.data.content, totalPagesCount: res.totalPagesCount })),
           catchError(() => of({ success: false, data: [], totalPagesCount: 0 }))
         );
       })
