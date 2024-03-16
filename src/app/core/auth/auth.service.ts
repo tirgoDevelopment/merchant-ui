@@ -5,18 +5,20 @@ import { jwtDecode } from 'jwt-decode';
 import { catchError, Observable, of, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { env } from 'environments/environment';
+import { Merchant } from 'app/shared/models/merchant.types';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   API_URL = 'https://merchant.tirgo.io/api/v1'
   public _authenticated: boolean;
-  private _user: any;
+  merchant: any;
 
   constructor(
     private http: HttpClient,
     private router: Router
   ) {
   }
+
   set accessToken(token: string) {
     localStorage.setItem('merchant', token);
   }

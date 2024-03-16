@@ -55,11 +55,6 @@ export class UserComponent implements OnInit, OnDestroy {
         if (!this.user) {
             return;
         }
-
-        this._userService.update({
-            ...this.user,
-            status,
-        }).subscribe();
     }
 
     signOut() {

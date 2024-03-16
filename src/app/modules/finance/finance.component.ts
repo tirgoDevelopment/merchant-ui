@@ -25,6 +25,8 @@ import { PipesModule } from 'app/shared/pipes/pipes.module';
 import { PaginationComponent } from 'app/shared/components/pagination/pagination.component';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { ToastrService } from 'ngx-toastr';
+import { UserService } from 'app/core/user/user.service';
+import { AuthService } from 'app/core/auth/auth.service';
 
 @Component({
   selector: 'app-finance',
@@ -76,6 +78,7 @@ export class FinanceComponent implements OnInit {
 
   constructor(
     private financeService: FinanceService,
+    public authService: AuthService,
     private dialog: MatDialog,
     private sseService: SseService,
     private ref: ChangeDetectorRef,
@@ -86,6 +89,9 @@ export class FinanceComponent implements OnInit {
   }
   ngOnInit(): void {
     this.currentUser = jwtDecode(localStorage.getItem('merchant'));
+    console.log(this.authService.merchant);
+    console.log(this.currentUser);
+
     this.sseSubscription = this.sseService.getUpdates().subscribe(
       (data) => {
         if (data.type == 'transactionVerified' || data.type == 'transactionRejected') {
