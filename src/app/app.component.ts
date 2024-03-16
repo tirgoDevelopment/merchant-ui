@@ -20,15 +20,15 @@ export class AppComponent {
     if(!this.authService.accessToken) {
       this.router.navigate(['/auth/sign-in'])
     }
-    // if (this.authService.accessToken) {
-    //   let user: any = jwtDecode(this.authService.accessToken);
-    //   this.authService.getMerchantById(user.merchantId).subscribe((res: any) => {
-    //     if (res.success) {
-    //       this.userService.merchant = res.data
-    //       this.authService.redirect(res.data);
-    //     }
-    //   })
-    // }
+    if (this.authService.accessToken) {
+      let user: any = jwtDecode(this.authService.accessToken);
+      this.authService.getMerchantById(user.merchantId).subscribe((res: any) => {
+        if (res.success) {
+          this.authService.merchant = res.data
+          // this.authService.redirect(res.data);
+        }
+      })
+    }
 
   };
 }
