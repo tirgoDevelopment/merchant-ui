@@ -127,13 +127,8 @@ export class FinanceComponent implements OnInit {
         setTimeout(() => {
           this.isLoading = false;
         }, 500)
-        this.dataSource = res.data;
-        this.totalPagesCount = res.totalPagesCount;
-        this.dataSource.forEach((v) => {
-          if (v.driverOffers && Array.isArray(v.driverOffers)) {
-            v.driverOffers = v.driverOffers.filter(offer => offer.rejected == false);
-          }
-        });
+        this.dataSource = res.data.content;
+        this.totalPagesCount = res.data.totalPAgesCount;
       } else {
         setTimeout(() => {
           this.isLoading = false;
