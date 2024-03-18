@@ -21,12 +21,7 @@ jobs:
 
       - name: Build Angular application
         run: npm run build --prod
-
-      - name: Debug output
-        run: |
-              pwd
-              ls -l
-
+        
       - name: Build and run Docker Compose
         run: |
           docker-compose -f docker-compose.yml up -d
