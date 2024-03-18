@@ -47,5 +47,5 @@ jobs:
            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
            sudo docker stop merchant-ui-container || true
            sudo docker rm -f merchant-ui-container || true
-           sudo docker run -d -p 80:8080 --name merchant-ui-container ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
+           sudo docker run -d -p 8080:8080 --name merchant-ui-container ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
           EOF
