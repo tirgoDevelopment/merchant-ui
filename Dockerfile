@@ -1,4 +1,4 @@
-# Use an official Node.js runtime as the base image
+# Use an official Node.js runtime as the base image for building
 FROM node:18 as build
 
 # Set the working directory in the container
@@ -19,8 +19,8 @@ RUN npm run build --environment=production
 # Use NGINX as the production server
 FROM nginx:alpine
 
-# Copy the built Angular app from the 'build' stage to the NGINX public directory
-COPY --from=build /usr/src/app/dist /usr/share/nginx/html
+# Copy the entire project directory to the NGINX public directory
+COPY --from=build /usr/src/app/ /usr/share/nginx/html/
 
 # Expose port 8080 to the outside world
 EXPOSE 8080
