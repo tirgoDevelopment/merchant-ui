@@ -35,7 +35,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: Publish image to Docker Hub
-        run: docker push merchant-ui:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
 
   deploy:
     needs: build
@@ -50,6 +50,6 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@15.207.248.164 << 'EOF'
            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-           docker-compose -f /merchant/docker-compose.yml pull
-           docker-compose -f /merchant/docker-compose.yml up -d
+           docker-compose -f /docker-compose.yml pull
+           docker-compose -f /docker-compose.yml up -d
           EOF
