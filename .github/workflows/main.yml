@@ -46,7 +46,16 @@ jobs:
       - name: Install Docker
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker.io
+
+          sudo apt-get remove docker docker-engine docker.io containerd runc
+
+          sudo apt-get purge docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-compose
+
+          sudo rm -rf /etc/bash_completion.d/docker /usr/local/bin/docker-compose /etc/bash_completion.d/docker-compose
+
+          sudo apt install containerd -y
+
+          sudo apt install -y docker.io docker-compose
  
       - name: Pull image from Docker registry
         run: docker pull ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
