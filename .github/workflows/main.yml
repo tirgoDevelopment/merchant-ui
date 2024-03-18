@@ -35,33 +35,16 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Install AWS CLI
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: SSH into the instance and deploy
         run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli 
-  
-      - name: Configure AWS credentials
-        run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} && aws configure set default.region ap-south-1b
-  
-      - name: Install Docker
-        run: |
-          sudo apt-get update
-
-          sudo apt-get remove docker docker-engine docker.io containerd runc
-
-          sudo apt-get purge docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-compose
-
-          sudo rm -rf /etc/bash_completion.d/docker /usr/local/bin/docker-compose /etc/bash_completion.d/docker-compose
-
-          sudo apt install containerd -y
-
-          sudo apt install -y docker.io docker-compose
- 
-      - name: Pull image from Docker registry
-        run: docker pull ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
- 
-      - name: Stop and remove old container (if exists)
-        run: docker rm -f merchant-ui-container || true
- 
-      - name: Run Docker container
-        run: docker run -d -p 80:8080 --name merchant-ui-container ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
+          ssh -o StrictHostKeyChecking=no user@your-instance-ip << 'EOF'
+            docker pull your-dockerhub-username/merchant-ui:latest
+            docker stop merchant-ui-container || true
+            docker rm -f merchant-ui-container || true
+            docker run -d -p 80:8080 --name merchant-ui-container your-dockerhub-username/merchant-ui:latest
+          EOF
