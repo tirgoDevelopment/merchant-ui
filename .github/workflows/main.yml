@@ -43,9 +43,9 @@ jobs:
       - name: SSH into the instance and deploy
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@15.207.248.164 << 'EOF'
-            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-            docker pull ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
-            docker stop merchant-ui-container || true
-            docker rm -f merchant-ui-container || true
-            docker run -d -p 80:8080 --name merchant-ui-container ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
+           sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
+           sudo docker stop merchant-ui-container || true
+           sudo docker rm -f merchant-ui-container || true
+           sudo docker run -d -p 80:8080 --name merchant-ui-container ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
           EOF
