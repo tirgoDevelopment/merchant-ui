@@ -1,4 +1,4 @@
-name: Angular CI/CD with Docker
+name: Angular CI/CD with Docker Compose
 
 on:
   push:
@@ -21,13 +21,14 @@ jobs:
 
       - name: Build Angular application
         run: npm run build --prod
-      
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/merchant-ui .
+
+      - name: Build and run Docker Compose
+        run: |
+          docker-compose -f ./merchant/docker-compose.yml up -d
 
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-      
+
       - name: Publish image to Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
 
@@ -43,9 +44,7 @@ jobs:
       - name: SSH into the instance and deploy
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@15.207.248.164 << 'EOF'
-           sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
-           sudo docker stop merchant-ui-container || true
-           sudo docker rm -f merchant-ui-container || true
-           sudo docker run -d -p 8080:8080 --name merchant-ui-container ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
+           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+           docker-compose -f /merchant/docker-compose.yml pull
+           docker-compose -f /merchant/docker-compose.yml up -d
           EOF
