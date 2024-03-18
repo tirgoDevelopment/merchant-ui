@@ -1,13 +1,17 @@
 version: '3.8'
 services:
   merchant-ui:
-    container_name: merchant
-    image: merchant
+    container_name: merchant-ui
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        IMAGE_NAME: "merchant-ui"  # Custom name for the image
     restart: unless-stopped
     ports:
       - "8200:8200"
     environment:
       - NGINX_PORT=8200
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Adjust this line to mount the nginx.conf file correctly
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./dist/merchant-ui:/var/www/test-merchant.tirgo.io
