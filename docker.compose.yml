@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  merchant-ui:
+    container_name: merchant-ui
+    image: nginx:1.17-alpine
+    restart: unless-stopped
+    ports:
+      - "8200:8200"
+    environment:
+      - NGINX_PORT=8200
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:rw
+      - ./dist/merchant-ui:/var/www/test-merchant.tirgo.io
