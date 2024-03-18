@@ -23,7 +23,7 @@ FROM nginx:alpine
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html
 
 # Expose port 8080 to the outside world
-EXPOSE 88080
+EXPOSE 8080
 
 # Command to run NGINX
 CMD ["nginx", "-g", "daemon off;"]
