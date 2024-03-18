@@ -23,7 +23,7 @@ jobs:
         run: npm run build --prod # Adjust this command based on your Angular project setup
       
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/merchant-ui .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/merchant-ui -f ../../Dockerfile .
       
       - name: Publish image to Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/merchant-ui:latest
