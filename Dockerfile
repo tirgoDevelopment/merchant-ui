@@ -10,4 +10,4 @@ RUN npm install
 
 RUN ng build --configuration=production
 
-CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200", "--prod"]
+CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200", "--configuration=production"]
