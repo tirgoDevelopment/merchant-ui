@@ -100,32 +100,32 @@ export class Step3Component implements OnInit {
   }
   signUp() {
     this.signUpForm.disable();
-    if (this.signUpForm.value.bankName === '') {
+    if (this.signUpForm.value.bankName == null || this.signUpForm.value.bankName === '') {
       this.signUpForm.enable();
       this.toastr.error('Требуется указать Наименование банка');
     }
-    else if (this.signUpForm.value.bankAccount === '') {
+    else if (this.signUpForm.value.bankAccount == null || this.signUpForm.value.bankAccount === '') {
       this.signUpForm.enable();
       this.toastr.error('Требуется указать Расчетный счет');
     }
-    else if (this.signUpForm.value.inn === '') {
+    else if (this.signUpForm.value.inn == null || this.signUpForm.value.inn === '') {
       this.signUpForm.enable();
       this.toastr.error('Требуется указать ИНН');
     }
-    else if (this.signUpForm.value.taxPayerCode === '') {
+    else if (this.signUpForm.value.taxPayerCode == null || this.signUpForm.value.taxPayerCode === '') {
       this.signUpForm.enable();
       this.toastr.error('Требуется указать Код плательщика НДС');
     }
-    else if (this.signUpForm.value.oked === '') {
+    else if (this.signUpForm.value.oked == null || this.signUpForm.value.oked === '') {
       this.signUpForm.enable();
       this.toastr.error('Требуется указать Код плательщика ОКЭД');
     }
-    else if (this.signUpForm.value.mfo === '') {
+    else if (this.signUpForm.value.mfo == null || this.signUpForm.value.mfo === '') {
       this.signUpForm.enable();
       this.toastr.error('Требуется указать Код плательщика МФО');
     }
     else {
-      if (this.signUpForm.value.bankAccount2 == '') {
+      if (this.signUpForm.value.bankAccount2 == null || this.signUpForm.value.bankAccount2 == '') {
         this.signUpForm.patchValue({
           responsiblePersonLastName: this.merchant.responsiblePersonLastName,
           responsiblePersonFistName: this.merchant.responsiblePersonFistName,
@@ -145,8 +145,7 @@ export class Step3Component implements OnInit {
           phoneNumber: this.merchant.phoneNumber,
           email: this.merchant.email,
           bankAccounts: [
-            { account: +this.signUpForm.value.bankAccount, currencyId: this.signUpForm.value.currency },
-            { account: +this.signUpForm.value.bankAccount2, currencyId: this.signUpForm.value.currency2 },
+            { account: this.signUpForm.value.bankAccount, currencyId: this.signUpForm.value.currency }
           ]
         });
       }
@@ -170,11 +169,14 @@ export class Step3Component implements OnInit {
           phoneNumber: this.merchant.phoneNumber,
           email: this.merchant.email,
           bankAccounts: [
-            { account: +this.signUpForm.value.bankAccount, currencyId: this.signUpForm.value.currency }
+            { account: this.signUpForm.value.bankAccount, currencyId: this.signUpForm.value.currency },
+            { account: this.signUpForm.value.bankAccount2, currencyId: this.signUpForm.value.currency2 }
           ]
         });
       }
       this.signUpForm.enable();
+      console.log(this.signUpForm.value);
+      
       this.authService.merchantComplete(this.signUpForm.value).subscribe((res: any) => {
         if (res.success) {
           this.completed = true;
