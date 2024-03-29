@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "tirgo-mobile": {
+      "hosting": {
+        "fuse": [
+          "tirgo-mobile"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "tirgo-mobile"
+  }
+}

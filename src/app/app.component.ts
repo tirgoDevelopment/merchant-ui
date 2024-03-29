@@ -9,7 +9,7 @@ import { UserService } from './core/user/user.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet ],
 })
 export class AppComponent {
   constructor(

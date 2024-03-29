@@ -89,9 +89,6 @@ export class FinanceComponent implements OnInit {
   }
   ngOnInit(): void {
     this.currentUser = jwtDecode(localStorage.getItem('merchant'));
-    console.log(this.authService.merchant);
-    console.log(this.currentUser);
-
     this.sseSubscription = this.sseService.getUpdates().subscribe(
       (data) => {
         if (data.type == 'transactionVerified' || data.type == 'transactionRejected') {
@@ -100,7 +97,6 @@ export class FinanceComponent implements OnInit {
         }
       },
       (error) => {
-        console.error(error);
       }
     );
     this.getAllTransaction();
