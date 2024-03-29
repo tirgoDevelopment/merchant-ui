@@ -27,9 +27,21 @@ import { PipesModule } from 'app/shared/pipes/pipes.module';
   imports: [MatInputModule, CommonModule,MatCardModule,PipesModule, ReactiveFormsModule, FormsModule, MatProgressSpinnerModule, MatFormFieldModule, MatIconModule, MatButtonModule, MatRippleModule, MatMenuModule, MatTabsModule, MatButtonToggleModule, NgApexchartsModule, NgFor, NgIf, MatTableModule, NgClass],
 })
 export class DocumentsComponent implements OnInit {
+  currentMerchant: any;
   constructor(
-    public authService: AuthService
+    private authService: AuthService,
+    private documentService: DocumentsService
   ) { }
   ngOnInit(): void {
+    this.getMerchant();
+  }
+
+  getMerchant() {
+    let curUser: any = jwtDecode(this.authService.accessToken);
+    this.authService.getMerchantById(curUser.merchantId).subscribe((res: any) => {
+      if (res.success) {
+        this.currentMerchant = res.data;
+      }
+    })
   }
 }

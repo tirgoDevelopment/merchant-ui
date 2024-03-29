@@ -2,95 +2,92 @@
   <div class="flex">
     <div class="text-3xl font-bold tracking-tight">Документы</div>
   </div>
-  
-  
-    <div class="grid grid-cols-2 gap-2 mt-5 ">
-      
-      <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 relative">
-        
-        <p class="flex justify-between my-2" [style.color]="authService.merchant.email ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">Электронная почта:</span>
-          <span class="dark:text-white">{{ authService.merchant.email ? authService.merchant.email : 'Не введен' }}</span>
+
+    <div class="grid grid-cols-2 gap-2 mt-5">
+      <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <p class="flex justify-between my-2" [style.color]="currentMerchant?.email ? 'black' : 'red'">
+          <span class="font-bold">Электронная почта:</span>
+          <span>{{ currentMerchant?.email ? currentMerchant?.email : 'Не введен' }}</span>
         </p>
-        <p class="flex justify-between my-2" [style.color]="authService.merchant.companyName ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">Название компании:</span>
-          <span class="dark:text-white">{{ authService.merchant.companyName ? authService.merchant.companyName : 'Не введен' }}</span>
+        <p class="flex justify-between my-2" [style.color]="currentMerchant?.companyName ? 'black' : 'red'">
+          <span class="font-bold">Название компании:</span>
+          <span>{{ currentMerchant?.companyName ? currentMerchant?.companyName : 'Не введен' }}</span>
         </p>
-        <p class="flex justify-between my-2" [style.color]="authService.merchant.supervisorFirstName ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">Имя руководителя:</span>
-          <span class="dark:text-white">{{ authService.merchant.supervisorFirstName ? authService.merchant.supervisorFirstName : 'Не введен' }}</span>
+        <p class="flex justify-between my-2" [style.color]="currentMerchant?.supervisorFirstName ? 'black' : 'red'">
+          <span class="font-bold">Имя руководителя:</span>
+          <span>{{ currentMerchant?.supervisorFirstName ? currentMerchant?.supervisorFirstName : 'Не введен' }}</span>
         </p>
-        <p class="flex justify-between my-2" [style.color]="authService.merchant.supervisorLastName ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">Фамилия руководителя:</span>
-          <span class="dark:text-white">{{ authService.merchant.supervisorLastName ? authService.merchant.supervisorLastName : 'Не введен' }}</span>
+        <p class="flex justify-between my-2" [style.color]="currentMerchant?.supervisorLastName ? 'black' : 'red'">
+          <span class="font-bold">Фамилия руководителя:</span>
+          <span>{{ currentMerchant?.supervisorLastName ? currentMerchant?.supervisorLastName : 'Не введен' }}</span>
         </p>
         <p class="flex justify-between my-2"
-          [style.color]="authService.merchant.responsiblePersonFistName ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">Имя ответственного лица:</span>
-          <span class="dark:text-white">{{ authService.merchant.responsiblePersonFistName ? authService.merchant.responsiblePersonFistName : 'Не введен'
+          [style.color]="currentMerchant?.responsiblePersonFistName ? 'black' : 'red'">
+          <span class="font-bold">Имя ответственного лица:</span>
+          <span>{{ currentMerchant?.responsiblePersonFistName ? currentMerchant?.responsiblePersonFistName : 'Не введен'
             }}</span>
         </p>
         <p class="flex justify-between my-2"
-          [style.color]="authService.merchant.responsiblePersonLastName ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">Фамилия ответственного лица:</span>
-          <span class="dark:text-white">{{ authService.merchant.responsiblePersonLastName ? authService.merchant.responsiblePersonLastName : 'Не введен'
+          [style.color]="currentMerchant?.responsiblePersonLastName ? 'black' : 'red'">
+          <span class="font-bold">Фамилия ответственного лица:</span>
+          <span>{{ currentMerchant?.responsiblePersonLastName ? currentMerchant?.responsiblePersonLastName : 'Не введен'
             }}</span>
         </p>
-        <p class="flex justify-between my-2" [style.color]="authService.merchant.bankName ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">Наименование банка:</span>
-          <span class="dark:text-white">{{ authService.merchant.bankName ? authService.merchant.bankName : 'Не введен' }}</span>
+        <p class="flex justify-between my-2" [style.color]="currentMerchant?.bankName ? 'black' : 'red'">
+          <span class="font-bold">Наименование банка:</span>
+          <span>{{ currentMerchant?.bankName ? currentMerchant?.bankName : 'Не введен' }}</span>
         </p>
-        <p class="flex justify-between my-2" *ngFor="let account of authService.merchant.bankAccounts"
-          [style.color]="authService.merchant.bankAccounts ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">Расчетный счет: </span>
-          <span class="dark:text-white">{{account.account ? account.account : 'Не введен' }}</span>
+        <p class="flex justify-between my-2" *ngFor="let account of currentMerchant?.bankAccounts"
+          [style.color]="currentMerchant?.bankAccounts ? 'black' : 'red'">
+          <span class="font-bold">Расчетный счет: </span>
+          <span>{{account.account ? account.account : 'Не введен' }}</span>
         </p>
-        <p class="flex justify-between my-2" [style.color]="authService.merchant.taxPayerCode ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">Код плательщика НДС: </span>
-          <span class="dark:text-white">{{authService.merchant.taxPayerCode ? authService.merchant.taxPayerCode : 'Не введен' }}</span>
+        <p class="flex justify-between my-2" [style.color]="currentMerchant?.taxPayerCode ? 'black' : 'red'">
+          <span class="font-bold">Код плательщика НДС: </span>
+          <span>{{currentMerchant?.taxPayerCode ? currentMerchant?.taxPayerCode : 'Не введен' }}</span>
         </p>
       </div>
 
-      <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 relative ">
-        <p class="flex justify-between my-2" [style.color]="authService.merchant.inn ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">ИНН:</span>
-          <span class="dark:text-white">{{ authService.merchant.inn ? authService.merchant.inn : 'Не введен' }}</span>
+      <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <p class="flex justify-between my-2" [style.color]="currentMerchant?.inn ? 'black' : 'red'">
+          <span class="font-bold">ИНН:</span>
+          <span>{{ currentMerchant?.inn ? currentMerchant?.inn : 'Не введен' }}</span>
         </p>
-        <p class="flex justify-between my-2" [style.color]="authService.merchant.oked ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">ОКЭД:</span>
-          <span class="dark:text-white">{{ authService.merchant.oked ? authService.merchant.oked : 'Не введен' }}</span>
+        <p class="flex justify-between my-2" [style.color]="currentMerchant?.oked ? 'black' : 'red'">
+          <span class="font-bold">ОКЭД:</span>
+          <span>{{ currentMerchant?.oked ? currentMerchant?.oked : 'Не введен' }}</span>
         </p>
-        <p class="flex justify-between my-2" [style.color]="authService.merchant.mfo ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">МФО:</span>
-          <span class="dark:text-white">{{ authService.merchant.mfo ? authService.merchant.mfo : 'Не введен' }}</span>
+        <p class="flex justify-between my-2" [style.color]="currentMerchant?.mfo ? 'black' : 'red'">
+          <span class="font-bold">МФО:</span>
+          <span>{{ currentMerchant?.mfo ? currentMerchant?.mfo : 'Не введен' }}</span>
         </p>
-        <p class="flex justify-between my-2" [style.color]="authService.merchant.dunsNumber ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">DUNS номер:</span>
-          <span class="dark:text-white">{{ authService.merchant.dunsNumber ? authService.merchant.dunsNumber : 'Не введен' }}</span>
+        <p class="flex justify-between my-2" [style.color]="currentMerchant?.dunsNumber ? 'black' : 'red'">
+          <span class="font-bold">DUNS номер:</span>
+          <span>{{ currentMerchant?.dunsNumber ? currentMerchant?.dunsNumber : 'Не введен' }}</span>
         </p>
-        <p class="flex justify-between my-2" [style.color]="authService.merchant.notes ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">Заметки:</span>
-          <span class="dark:text-white">{{ authService.merchant.notes ? authService.merchant.notes : 'Не введен'
+        <p class="flex justify-between my-2" [style.color]="currentMerchant?.notes ? 'black' : 'red'">
+          <span class="font-bold">Заметки:</span>
+          <span>{{ currentMerchant?.notes ? currentMerchant?.notes : 'Не введен'
             }}</span>
         </p>
-        <p class="flex justify-between my-2" [style.color]="authService.merchant.phoneNumber ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">Телефон:</span>
-          <span class="dark:text-white">{{ authService.merchant.phoneNumber ? authService.merchant.phoneNumber : 'Не введен'
+        <p class="flex justify-between my-2" [style.color]="currentMerchant?.phoneNumber ? 'black' : 'red'">
+          <span class="font-bold">Телефон:</span>
+          <span>{{ currentMerchant?.phoneNumber ? currentMerchant?.phoneNumber : 'Не введен'
             }}</span>
         </p>
         <p class="flex justify-between my-2"
-          [style.color]="authService.merchant.responsbilePersonPhoneNumber ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">Номер телефона ответственного лица:</span>
-          <span class="dark:text-white">{{ authService.merchant.responsbilePersonPhoneNumber ? authService.merchant.responsbilePersonPhoneNumber : 'Не введен' }}</span>
+          [style.color]="currentMerchant?.responsbilePersonPhoneNumber ? 'black' : 'red'">
+          <span class="font-bold">Номер телефона ответственного лица:</span>
+          <span>{{ currentMerchant?.responsbilePersonPhoneNumber ? currentMerchant?.responsbilePersonPhoneNumber : 'Не введен' }}</span>
         </p>
 
-        <p class="flex justify-between my-2" [style.color]="authService.merchant.legalAddress ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">Юридический адрес:</span>
-          <span class="dark:text-white">{{ authService.merchant.legalAddress ? authService.merchant.legalAddress : 'Не введен' }}</span>
+        <p class="flex justify-between my-2" [style.color]="currentMerchant?.legalAddress ? 'black' : 'red'">
+          <span class="font-bold">Юридический адрес:</span>
+          <span>{{ currentMerchant?.legalAddress ? currentMerchant?.legalAddress : 'Не введен' }}</span>
         </p>
-        <p class="flex justify-between my-2" [style.color]="authService.merchant.factAddress ? 'black' : 'red'">
-          <span class="font-bold dark:text-white">Фактический адрес:</span>
-          <span class="dark:text-white">{{ authService.merchant.factAddress ? authService.merchant.factAddress : 'Не введен' }}</span>
+        <p class="flex justify-between my-2" [style.color]="currentMerchant?.factAddress ? 'black' : 'red'">
+          <span class="font-bold">Фактический адрес:</span>
+          <span>{{ currentMerchant?.factAddress ? currentMerchant?.factAddress : 'Не введен' }}</span>
         </p>
 
       </div>
@@ -99,32 +96,32 @@
     <div class="grid grid-cols-4 gap-4 mt-8">
       <mat-card class="h-64">
         <div class="font-bold text-base p-4"> Логотип </div>
-        <img *ngIf="authService.merchant.logoFilePath" [src]="authService.merchant.logoFilePath | fileFetch | async"
+        <img *ngIf="currentMerchant?.logoFilePath" [src]="currentMerchant?.logoFilePath | fileFetch | async"
           alt="Photo of logo" class=" object-fill border border-gray-300">
-        <p *ngIf="!authService.merchant.logoFilePath" class="text-red-500 p-4"><b>Не введен</b></p>
+        <p *ngIf="!currentMerchant?.logoFilePath" class="text-red-500 p-2"><b>Не введен</b></p>
       </mat-card>
 
       <mat-card class="h-64">
         <div class="font-bold text-base p-4"> Паспорт </div>
-        <img *ngIf="authService.merchant.passportFilePath" [src]="authService.merchant.passportFilePath | fileFetch | async"
+        <img *ngIf="currentMerchant?.passportFilePath" [src]="currentMerchant?.passportFilePath | fileFetch | async"
           alt="Photo of passport" class="object-fill border border-gray-300">
-        <p *ngIf="!authService.merchant.passportFilePath" class="text-red-500 p-4"><b>Не введен</b></p>
+        <p *ngIf="!currentMerchant?.passportFilePath" class="text-red-500 p-2"><b>Не введен</b></p>
       </mat-card>
 
       <mat-card class="h-64">
         <div class="font-bold text-base p-4"> Регистрационное свидетельство </div>
-        <img *ngIf="authService.merchant.registrationCertificateFilePath"
-          [src]="authService.merchant.registrationCertificateFilePath | fileFetch | async" alt="Photo of logo"
+        <img *ngIf="currentMerchant?.registrationCertificateFilePath"
+          [src]="currentMerchant?.registrationCertificateFilePath | fileFetch | async" alt="Photo of logo"
           class=" object-fill border border-gray-300">
-        <p *ngIf="!authService.merchant.registrationCertificateFilePath" class="text-red-500 p-4"><b>Не введен</b></p>
+        <p *ngIf="!currentMerchant?.registrationCertificateFilePath" class="text-red-500 p-2"><b>Не введен</b></p>
       </mat-card>
 
       <mat-card class="h-64">
         <div class="font-bold text-base p-4"> Лицензия для перевозки груза </div>
-        <img *ngIf="authService.merchant.transportationCertificateFilePath"
-          [src]="authService.merchant.transportationCertificateFilePath | fileFetch | async"
+        <img *ngIf="currentMerchant?.transportationCertificateFilePath"
+          [src]="currentMerchant?.transportationCertificateFilePath | fileFetch | async"
           alt="Лицензия для перевозки груза" class=" object-fill border border-gray-300">
-        <p *ngIf="!authService.merchant.transportationCertificateFilePath" class="text-red-500 p-4"><b>Не введен</b></p>
+        <p *ngIf="!currentMerchant?.transportationCertificateFilePath" class="text-red-500 p-2"><b>Не введен</b></p>
       </mat-card>
 
     </div>

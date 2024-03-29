@@ -19,15 +19,18 @@
     </div>
   </div>
 
-<div class="cards flex gap-4 mb-5" *ngFor="let card of this.authService.merchant.balances">
+  <div class="cards flex gap-4 mb-5" *ngFor="let card of balances">
 
     <div class="border rounded-lg p-4 bg-[#e8e8e8] dark:bg-[#1E293BDB] sm:w-full md:w-72">
-      <div class="text-2xl font-extrabold my-2">{{card.activebalance}} {{card.currencyname}}</div>
-      <div class="px-2 py-1 bg-[#2A8B80] text-white rounded-lg w-fit my-2">Активный баланс</div>
+      <div class="text-2xl font-extrabold my-2">{{card.activeSecureBalance}} {{card.currencyname}}</div>
+      <div class="px-2 py-1 bg-[#2A8B80] text-white rounded-lg w-fit my-2">Активный баланс безопасной транзакции</div>
     </div>
-
     <div class="border rounded-lg p-4 bg-[#e8e8e8] dark:bg-[#1E293BDB] sm:w-full md:w-72">
-      <div class="text-2xl font-extrabold my-2">{{card.frozenbalance}} {{card.currencyname}}</div>
+      <div class="text-2xl font-extrabold my-2">{{card.activeTransactionBalance}} {{card.currencyname}}</div>
+      <div class="px-2 py-1 bg-[#2A8B80] text-white rounded-lg w-fit my-2">Активный баланс транзакции</div>
+    </div>
+    <div class="border rounded-lg p-4 bg-[#e8e8e8] dark:bg-[#1E293BDB] sm:w-full md:w-72">
+      <div class="text-2xl font-extrabold my-2">{{card.frozenBalance}} {{card.currencyname}}</div>
       <div class="px-2 py-1 bg-[#167694] text-white rounded-lg w-fit my-2">В обработке</div>
     </div>
 
