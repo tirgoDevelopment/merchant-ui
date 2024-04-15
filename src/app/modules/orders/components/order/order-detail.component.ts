@@ -32,14 +32,14 @@ export class OrderDetailComponent implements OnInit {
   private sseSubscription: Subscription;
   currencies: any;
   editing: boolean = false;
-
+  data:any;
   originalAmount: number;
   editedAmount: number;
   originalCurrencyId: string;
   editedCurrencyId: string;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public orderId: any,
     private sseService: SseService,
     private orderService: OrdersService,
     private typesService: TypesService,
@@ -62,10 +62,10 @@ export class OrderDetailComponent implements OnInit {
         console.error(error);
       }
     );
-    this.updateDriverOffers();
+    this.getOrderById()
   }
   getOrderById() {
-    this.orderService.getOrderById(this.data.id).subscribe((res: any) => {
+    this.orderService.getOrderById(this.orderId).subscribe((res: any) => {
       if (res.success) {
         this.data = res.data;
         this.updateDriverOffers();
@@ -108,7 +108,6 @@ export class OrderDetailComponent implements OnInit {
 
     this.editedAmount = offer.amount;
     this.editedCurrencyId = offer.currency.id;
-
   }
   saveEditedOffer(offer) {
     if (this.originalAmount == this.editedAmount) {
