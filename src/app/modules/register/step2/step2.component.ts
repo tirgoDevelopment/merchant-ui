@@ -88,7 +88,7 @@ export class Step2Component implements OnInit {
       email: this.merchant.email,
       supervisorFirstName: merchant.supervisorFirstName,
       supervisorLastName: merchant.supervisorLastName,
-      phoneNumber: merchant.phoneNumber,
+      phoneNumber: '+' + merchant.phoneNumber,
       responsiblePersonFistName: merchant.responsiblePersonFistName,
       responsiblePersonLastName: merchant.responsiblePersonLastName,
       responsbilePersonPhoneNumber: merchant.responsbilePersonPhoneNumber,

@@ -13,9 +13,6 @@ import { mockApiServices } from './core/mock-api';
 import { provideToastr } from 'ngx-toastr';
 import { provideNgxMask } from 'ngx-mask';
 import { YaConfig, AngularYandexMapsModule } from 'angular8-yandex-maps';
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { getMessaging, provideMessaging } from '@angular/fire/messaging';
-import { env } from 'environments/environment';
 
 const mapConfig: YaConfig = {
     apikey: 'df0cb391-97e5-47ce-a954-f54cb0644e56',
@@ -23,12 +20,6 @@ const mapConfig: YaConfig = {
 };
 export const appConfig: ApplicationConfig = {
     providers: [
-        importProvidersFrom(
-            provideFirebaseApp(() => initializeApp(env.firebase))
-        ),
-        importProvidersFrom(
-            provideMessaging(() => getMessaging())
-        ) ,      
         importProvidersFrom(AngularYandexMapsModule.forRoot(mapConfig)),
         provideNgxMask(),
         provideToastr(),

@@ -32,7 +32,7 @@
           <mat-form-field class="w-full">
             <mat-label>Телефон</mat-label>
             <ngx-mat-intl-tel-input [formControlName]="'phoneNumber'" [preferredCountries]="['uz']"
-              [onlyCountries]="['uz','kz','tj','kg','ru','af']" name="phoneNumber" #phone>
+              [onlyCountries]="['uz','kz','tj','kg','ru','af']" name="phoneNumber" #phoneNumber >
             </ngx-mat-intl-tel-input>
           </mat-form-field>
         </div>
@@ -50,7 +50,7 @@
 
           <mat-form-field class="w-full">
             <mat-label>Телефон ответственного лица</mat-label>
-            <ngx-mat-intl-tel-input formControlName="responsbilePersonPhoneNumber" [preferredCountries]="['uz']"
+            <ngx-mat-intl-tel-input [formControlName]="'responsbilePersonPhoneNumber'" [preferredCountries]="['uz']"
               [onlyCountries]="['uz','kz','tj','kg','ru','af']" name="responsbilePersonPhoneNumber"
               #responsbilePersonPhoneNumber>
             </ngx-mat-intl-tel-input>

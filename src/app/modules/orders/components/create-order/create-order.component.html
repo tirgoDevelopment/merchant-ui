@@ -193,15 +193,14 @@
       <div class="flex gap-2" *ngIf="isContainer">
         <mat-form-field class="flex-auto md:w-72 sm:w-full">
           <mat-label>Объем(ф)</mat-label>
-          <mat-select [value]="'EU'" formControlName="containerVolume">
-            <mat-option [value]="'20'">20</mat-option>
-            <mat-option [value]="'40'">40</mat-option>
-            <mat-option [value]="'60'">60</mat-option>
-            <mat-option [value]="'high'">Высокий куб</mat-option>
+          <mat-select formControlName="containerVolume">
+            <mat-option value="20">20</mat-option>
+            <mat-option value="40">40</mat-option>
+            <mat-option value="60">60</mat-option>
           </mat-select>
         </mat-form-field>
+        <mat-checkbox formControlName="isHighCube">Высокий куб</mat-checkbox>
       </div>
-
 
       <div class="flex gap-2">
         <mat-form-field class="flex-auto md:w-72 sm:w-full">
@@ -220,7 +219,7 @@
 
         <mat-form-field class="flex-auto md:w-72 sm:w-full">
           <mat-label>Кубатура</mat-label>
-          <input type="number" matInput formControlName="cubature">
+          <input type="number" matInput formControlName="capacity">
           <span matSuffix>m<sup>3</sup> </span>
         </mat-form-field>
       </div>

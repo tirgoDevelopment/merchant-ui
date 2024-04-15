@@ -158,7 +158,7 @@ export class OrdersComponent implements OnInit {
       height: '100vh',
       autoFocus: false,
       disableClose: true,
-      data: order,
+      data: order.id,
       position: {
         top: '0',
         right: '0',

@@ -1,11 +1,11 @@
 <div class="flex justify-between items-center">
-  <p mat-dialog-title class="font-bold text-2xl">ID #{{data.id}}</p>
+  <p mat-dialog-title class="font-bold text-2xl" *ngIf="orderId">ID #{{orderId}}</p>
   <button mat-icon-button mat-dialog-close>
     <mat-icon aria-label="Close dialog">close</mat-icon>
   </button>
 </div>
 
-<mat-tab-group>
+<mat-tab-group *ngIf="data">
   <mat-tab label="Информация">
     <mat-dialog-content class="h-full">
       <div class="h-60 w-full mt-4">
@@ -84,7 +84,7 @@
           <div>
             <p class="text-lg mb-1">Кубатура</p>
             <p class="font-bold">
-              {{ data.cubature ? data.cubature : 'Не указана' }} <span *ngIf="data.cubature">m<sup>3</sup> </span>
+              {{ data.capacity ? data.capacity : 'Не указана' }} <span *ngIf="data.capacity">m<sup>3</sup> </span>
             </p>
           </div>
 
@@ -173,19 +173,25 @@
           <div *ngIf="data.isHook">
             <p class="text-lg mb-1">Крюк</p>
             <p class="font-bold">
-              {{data.isHook}}</p>
+              {{data.isHook ? 'Да':'Нет'}}</p>
           </div>
 
           <div *ngIf="data.cisternVolume">
-            <p class="text-lg mb-1">Объем(л)</p>
+            <p class="text-lg mb-1">Объем цистерна (л)</p>
             <p class="font-bold">
               {{data.cisternVolume}}</p>
           </div>
 
           <div *ngIf="data.containerVolume">
-            <p class="text-lg mb-1">Объем(ф)</p>
+            <p class="text-lg mb-1">Объем контейнера(ф)</p>
             <p class="font-bold">
               {{data.containerVolume}}</p>
+          </div>
+
+          <div *ngIf="data.isHighCube">
+            <p class="text-lg mb-1">Высокий куб</p>
+            <p class="font-bold">
+              {{data.isHighCube ? 'Да':'Нет'}}</p>
           </div>
 
           <div>

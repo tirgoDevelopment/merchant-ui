@@ -119,9 +119,12 @@ export class CreateOrderComponent implements OnInit {
       cargoLength: [null],
       cargoWidth: [null],
       cargoHeight: [null],
-      cubature: [null],
+      capacity: [null],
       cargoPackageId: [null],
-      loadingMethodId: [null]
+      loadingMethodId: [null],
+      containerVolume: [null],
+      cisternVolume: [null],
+      isHighCube: [false]
     })
     this.changeValue();
     forkJoin({
@@ -235,10 +238,10 @@ export class CreateOrderComponent implements OnInit {
       }
     });
     this.form.get('transportKindIds').valueChanges.subscribe((values) => {
-      // this.isAutotransport = values.includes('Автовоз');
-      // this.isRefrigerator = values.includes('Рефрежатор');
-      // this.isCistern = values.includes('Цистерна');
-      // this.isContainer = values.includes('Контейнеровоз');
+      this.isAutotransport = values.includes('b2f16e21-983d-42bc-9cd6-574668f40ad7');
+      this.isRefrigerator = values.includes('af5a2564-6b65-482f-a114-332ddd9b50e3');
+      this.isCistern = values.includes('1510527c-8710-4361-966a-83242e9c4105');
+      this.isContainer = values.includes('7bedd461-ec79-4753-9e73-57ff017ee279');
     });
   }
   findCity(ev: any): void {
